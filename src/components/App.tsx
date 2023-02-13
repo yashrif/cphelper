@@ -1,22 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { Box } from "@chakra-ui/react";
 
-import { useAppDispatch, useAppSelector } from "../hooks/hooks";
-import { fetchProblems } from "../store/cfSlice";
+import { Home } from "./Home/Home";
 
 export const App = () => {
-  const problems = useAppSelector((state) => state.problemList);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(fetchProblems());
-  }, []);
-
-  console.log(problems);
-
   return (
-    <div>
-      <div>App</div>
-      <div>Hello World</div>
-    </div>
+    <Box height={"100vh"} margin={"0 auto"} overflow={"hidden"}>
+      <Home />
+    </Box>
   );
 };
