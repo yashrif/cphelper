@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
-import { Box, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Grid, Image, Text } from "@chakra-ui/react";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { fetchUser } from "../../store/cfSlice";
 import { BlobAnimation } from "./BlobAnimation";
-import axios from "axios";
+import { WaveAnimation } from "./WaveAnimation";
+import { RightPanel } from "./RightPanel";
+import { RatingCurve } from "./RatingCurve";
 
 export const Home = () => {
   const useDispatch = useAppDispatch();
@@ -12,39 +14,58 @@ export const Home = () => {
 
   useEffect(() => {
     useDispatch(fetchUser("yashrif"));
-
-    axios
-      .get("https://codeforces.com", {
-        proxy: {
-          host: "https://codeforces.com",
-          port: 8050,
-        },
-      })
-      .then((res) => console.log(res));
   }, []);
 
   return (
-    <Box
+    <Grid
       maxW={"container.xl"}
       h={"full"}
-      margin={"0 auto"}
-      display={"flex"}
-      flexDirection={"column"}
-      justifyContent={"center"}
-      alignItems={"center"}
+      templateColumns={"3fr 1fr"}
+      columnGap={"36"}
     >
-      <Image
-        src={user?.titlePhoto}
-        alt="avatar"
-        boxSize={"2xs"}
-        objectFit={"cover"}
-        borderRadius={"full"}
-      />
+      <Box>
+        <WaveAnimation />
 
-      {<BlobAnimation />}
+        <Flex columnGap={"96"}>
+          <Box
+            position={"relative"}
+            display={"inline-block"}
+            top={"-7rem"}
+            left={"40"}
+            zIndex={"5"}
+          >
+            <Image
+              src={user?.titlePhoto}
+              alt="avatar"
+              boxSize={"xs"}
+              objectFit={"cover"}
+              borderRadius={"full"}
+            />
 
-      {/* <Text>{user?.firstName}</Text>
-      <Text>{user?.lastName}</Text> */}
-    </Box>
+            {<BlobAnimation />}
+          </Box>
+          <Box py={"8"} fontWeight={"semibold"} lineHeight={"short"}>
+            <Text fontSize={"2xl"}>
+              {user?.firstName} {user?.lastName}
+            </Text>
+
+            {/* TODO: Change font to greyish */}
+
+            <Text
+              fontSize={"lg"}
+              color={"font.muted"}
+              fontWeight={"normal"}
+              textTransform={"capitalize"}
+            >
+              {user?.rank}
+            </Text>
+          </Box>
+        </Flex>
+
+        <RatingCurve />
+      </Box>
+
+      <RightPanel />
+    </Grid>
   );
 };

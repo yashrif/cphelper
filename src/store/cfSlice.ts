@@ -11,11 +11,12 @@ interface ProblemsFetchState {
   loading: Loading;
   problemList: Problem[];
   problemTags: string[];
-  rating: {
+  problemRating: {
     max: number;
     min: number;
   };
   user: User;
+  userRatingHistory: number[];
 }
 
 /* ------------------------------ Initial State ----------------------------- */
@@ -58,8 +59,8 @@ export const fetchProblemTags = createAsyncThunk(
   }
 );
 
-export const fetchRating = createAsyncThunk(
-  "cf/fetchRating",
+export const fetchProblemRating = createAsyncThunk(
+  "cf/fetchProblemRating",
   async (__, { dispatch, getState }) => {
     await dispatch(fetchProblemList([]));
 
@@ -87,6 +88,21 @@ export const fetchUser = createAsyncThunk(
     ).data.result[0]
 );
 
+export const fetchUserRatingHistory = createAsyncThunk(
+  "cf/fetchUserRatingHistory",
+  async (handle: string) => {
+    const response = (
+      await apiCf.get("https://codeforces.com/api/user.rating", {
+        params: {
+          handle: handle,
+        },
+      })
+    ).data.result;
+
+    return [0, ..._.chain(response).map("newRating").value()];
+  }
+);
+
 /* -------------------------------------------------------------------------- */
 /*                                   Slices                                   */
 /* -------------------------------------------------------------------------- */
@@ -96,9 +112,12 @@ const problemSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    /* ------------------------------ Problem List ------------------------------ */
+
     builder.addCase(fetchProblemList.pending, (state) => {
       state.loading = Loading.PENDING;
     });
+
     builder.addCase(
       fetchProblemList.fulfilled,
       (state: ProblemsFetchState, action: PayloadAction<Problem[]>) => {
@@ -106,25 +125,61 @@ const problemSlice = createSlice({
         state.problemList = action.payload;
       }
     );
+
     builder.addCase(fetchProblemList.rejected, (state) => {
       state.loading = Loading.FAILED;
       state.problemList = [];
     });
+
+    /* ------------------------------ Problem Tags ------------------------------ */
+
     builder.addCase(
       fetchProblemTags.fulfilled,
       (state, action: PayloadAction<string[]>) => {
         state.problemTags = action.payload;
       }
     );
-    builder.addCase(fetchRating.fulfilled, (state, action) => {
-      state.rating = action.payload;
+
+    /* ----------------------------- Problem Rating ----------------------------- */
+
+    builder.addCase(fetchProblemRating.fulfilled, (state, action) => {
+      state.problemRating = action.payload;
     });
+
+    /* ---------------------------------- User ---------------------------------- */
+
+    builder.addCase(fetchUser.pending, (state) => {
+      state.loading = Loading.PENDING;
+    });
+
     builder.addCase(
       fetchUser.fulfilled,
       (state, action: PayloadAction<User>) => {
         state.user = action.payload;
       }
     );
+
+    builder.addCase(fetchUser.rejected, (state) => {
+      state.loading = Loading.FAILED;
+    });
+
+    /* --------------------------- User Rating History -------------------------- */
+
+    builder.addCase(fetchUserRatingHistory.pending, (state) => {
+      state.loading = Loading.PENDING;
+    });
+
+    builder.addCase(
+      fetchUserRatingHistory.fulfilled,
+      (state, action: PayloadAction<number[]>) => {
+        state.userRatingHistory = action.payload;
+      }
+    );
+
+    builder.addCase(fetchUserRatingHistory.rejected, (state) => {
+      state.loading = Loading.FAILED;
+      state.userRatingHistory = [];
+    });
   },
 });
 

@@ -1,17 +1,6 @@
 import { extendTheme } from "@chakra-ui/react";
 
 export const theme = extendTheme({
-  borderRadius: {
-    none: "0",
-    sm: "0.2rem",
-    base: "0.4rem",
-    md: "0.5rem",
-    lg: "0.9rem",
-    xl: "1.1rem",
-    "2xl": "1.6rem",
-    "3xl": "2rem",
-    full: "9999px",
-  },
   breakpoints: {
     sm: "30em",
     md: "48em",
@@ -19,12 +8,31 @@ export const theme = extendTheme({
     xl: "80em",
     "2xl": "96em",
   },
-  colors: {},
+
+  colors: {
+    bg: "#fff",
+    bgAsh: "#f2f3f4",
+    bgContainer: "#f2f5fe",
+    bgContainer2: "#f7faff",
+    bgContainer3: "#f9fcfe",
+    bgDarker: "#fafafc",
+
+    font: {
+      focused: "#18181B",
+      general: "#555",
+      light: "#fff",
+      muted: "#767676",
+      muted2: "#aaa",
+      primary: "#393f93",
+    },
+  },
+
   // fonts: {
   //   body: "Rubik, system-ui, sans-serif",
   //   heading: "Rubik, Georgia, serif",
   //   mono: "Menlo, monospace",
   // },
+
   fontSizes: {
     xs: "0.8rem",
     sm: "1rem",
@@ -43,6 +51,7 @@ export const theme = extendTheme({
     "11xl": "8.6rem",
     "12xl": "9.8rem",
   },
+
   fontWeights: {
     hairline: 100,
     thin: 200,
@@ -54,6 +63,7 @@ export const theme = extendTheme({
     extrabold: 800,
     black: 900,
   },
+
   lineHeights: {
     normal: "normal",
     none: 1,
@@ -71,6 +81,7 @@ export const theme = extendTheme({
     "9": "2.25rem",
     "10": "2.5rem",
   },
+
   letterSpacings: {
     tighter: "-0.05em",
     tight: "-0.025em",
@@ -79,6 +90,22 @@ export const theme = extendTheme({
     wider: "0.05em",
     widest: "0.1em",
   },
+
+  radii: {
+    none: "0",
+    sm: "0.2rem",
+    base: "0.4rem",
+    md: "0.5rem",
+    lg: "0.9rem",
+    xl: "1.1rem",
+    "2xl": "1.6rem",
+    "3xl": "2rem",
+    "4xl": "2.4rem",
+    "5xl": "2.8rem",
+    "6xl": "3.2rem",
+    full: "9999px",
+  },
+
   sizes: {
     max: "max-content",
     min: "min-content",
@@ -104,41 +131,33 @@ export const theme = extendTheme({
       xl: "1280px",
     },
   },
+
   space: {
     px: "1px",
-    0.5: "0.125rem",
-    1: "0.25rem",
-    1.5: "0.375rem",
-    2: "0.5rem",
-    2.5: "0.625rem",
-    3: "0.75rem",
-    3.5: "0.875rem",
-    4: "1rem",
-    5: "1.25rem",
-    6: "1.5rem",
-    7: "1.75rem",
-    8: "2rem",
-    9: "2.25rem",
-    10: "2.5rem",
-    12: "3rem",
-    14: "3.5rem",
-    16: "4rem",
-    20: "5rem",
-    24: "6rem",
-    28: "7rem",
-    32: "8rem",
-    36: "9rem",
-    40: "10rem",
-    44: "11rem",
-    48: "12rem",
-    52: "13rem",
-    56: "14rem",
-    60: "15rem",
-    64: "16rem",
-    72: "18rem",
-    80: "20rem",
-    96: "24rem",
+    0.5: "0.5rem",
+    1: "0.1rem",
+    2: "0.2rem",
+    4: "0.4rem",
+    8: "0.8rem",
+    12: "1.2rem",
+    16: "1.6rem",
+    20: "2rem",
+    24: "2.4rem",
+    28: "2.8rem",
+    32: "3.2rem",
+    36: "3.6rem",
+    40: "4rem",
+    44: "4.4rem",
+    48: "4.8rem",
+    52: "5.2rem",
+    56: "5.6rem",
+    60: "6rem",
+    64: "6.4rem",
+    72: "7.2rem",
+    80: "8rem",
+    96: "9.6rem",
   },
+
   zIndices: {
     hide: -1,
     auto: "auto",
