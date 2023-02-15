@@ -2,13 +2,18 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import _ from "lodash";
 
 import { RootState } from "./store";
-import { Loading, Problem, User } from "../common/types";
+import { Loading, Problem, Submission, User } from "../common/types";
 import apiCf from "../apis/apiCf";
 
 /* ------------------------------- Interfaces ------------------------------- */
 
 interface ProblemsFetchState {
-  loading: Loading;
+  loading: {
+    problemList: Loading;
+    user: Loading;
+    userRatingHistory: Loading;
+    userStatus: Loading;
+  };
   problemList: Problem[];
   problemTags: string[];
   problemRating: {
@@ -17,12 +22,17 @@ interface ProblemsFetchState {
   };
   user: User;
   userRatingHistory: number[];
+  userStatus: Submission[];
 }
 
 /* ------------------------------ Initial State ----------------------------- */
 
 const initialState = {
-  loading: Loading.IDLE,
+  loading: {
+    problemList: Loading.IDLE,
+    user: Loading.IDLE,
+    userRatingHistory: Loading.IDLE,
+  },
 } as ProblemsFetchState;
 
 /* -------------------------------------------------------------------------- */
@@ -90,16 +100,38 @@ export const fetchUser = createAsyncThunk(
 
 export const fetchUserRatingHistory = createAsyncThunk(
   "cf/fetchUserRatingHistory",
-  async (handle: string) => {
-    const response = (
+  async (handle: string) =>
+    (
       await apiCf.get("https://codeforces.com/api/user.rating", {
         params: {
           handle: handle,
         },
       })
-    ).data.result;
+    ).data.result
+);
 
-    return [0, ..._.chain(response).map("newRating").value()];
+export const fetchUserStatus = createAsyncThunk(
+  "cf/fetchUserStatus",
+  async (handle: string) => {
+    const response = (
+      await apiCf.get("https://codeforces.com/api/user.status", {
+        params: {
+          handle: handle,
+          from: 1,
+          count: 5,
+        },
+      })
+    ).data.result as Submission[];
+
+    return response.map((e) =>
+      _.pick(e, [
+        "id",
+        "problem",
+        "verdict",
+        "creationTimeSeconds",
+        "programmingLanguage",
+      ])
+    );
   }
 );
 
@@ -115,20 +147,20 @@ const problemSlice = createSlice({
     /* ------------------------------ Problem List ------------------------------ */
 
     builder.addCase(fetchProblemList.pending, (state) => {
-      state.loading = Loading.PENDING;
+      state.loading.problemList = Loading.PENDING;
     });
 
     builder.addCase(
       fetchProblemList.fulfilled,
       (state: ProblemsFetchState, action: PayloadAction<Problem[]>) => {
-        state.loading = Loading.SUCEEDED;
+        state.loading.problemList = Loading.SUCEEDED;
         state.problemList = action.payload;
       }
     );
 
     builder.addCase(fetchProblemList.rejected, (state) => {
-      state.loading = Loading.FAILED;
-      state.problemList = [];
+      state.loading.problemList = Loading.FAILED;
+      // state.problemList = [];
     });
 
     /* ------------------------------ Problem Tags ------------------------------ */
@@ -149,36 +181,56 @@ const problemSlice = createSlice({
     /* ---------------------------------- User ---------------------------------- */
 
     builder.addCase(fetchUser.pending, (state) => {
-      state.loading = Loading.PENDING;
+      state.loading.user = Loading.PENDING;
     });
 
     builder.addCase(
       fetchUser.fulfilled,
       (state, action: PayloadAction<User>) => {
+        state.loading.user = Loading.SUCEEDED;
         state.user = action.payload;
       }
     );
 
     builder.addCase(fetchUser.rejected, (state) => {
-      state.loading = Loading.FAILED;
+      state.loading.user = Loading.FAILED;
     });
 
     /* --------------------------- User Rating History -------------------------- */
 
     builder.addCase(fetchUserRatingHistory.pending, (state) => {
-      state.loading = Loading.PENDING;
+      state.loading.userRatingHistory = Loading.PENDING;
     });
 
     builder.addCase(
       fetchUserRatingHistory.fulfilled,
       (state, action: PayloadAction<number[]>) => {
+        state.loading.userRatingHistory = Loading.SUCEEDED;
         state.userRatingHistory = action.payload;
       }
     );
 
     builder.addCase(fetchUserRatingHistory.rejected, (state) => {
-      state.loading = Loading.FAILED;
-      state.userRatingHistory = [];
+      state.loading.userRatingHistory = Loading.FAILED;
+      // state.userRatingHistory = [];
+    });
+
+    /* ------------------------------- User Status ------------------------------ */
+
+    builder.addCase(fetchUserStatus.pending, (state) => {
+      state.loading.userStatus = Loading.PENDING;
+    });
+
+    builder.addCase(
+      fetchUserStatus.fulfilled,
+      (state, action: PayloadAction<Submission[]>) => {
+        state.loading.userStatus = Loading.SUCEEDED;
+        state.userStatus = action.payload;
+      }
+    );
+
+    builder.addCase(fetchUserStatus.rejected, (state) => {
+      state.loading.userStatus = Loading.FAILED;
     });
   },
 });

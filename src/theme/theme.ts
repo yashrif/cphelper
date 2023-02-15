@@ -11,18 +11,19 @@ export const theme = extendTheme({
 
   colors: {
     bg: "#fff",
-    bgAsh: "#f2f3f4",
-    bgContainer: "#f2f5fe",
-    bgContainer2: "#f7faff",
-    bgContainer3: "#f9fcfe",
-    bgDarker: "#fafafc",
+    bgContainer1: "#fafafc",
+    bgContainer2: "#f2f5fe",
+    bgContainer3: "#f7faff",
+    bgContainer4: "#f9fcfe",
+    bgContainer5: "#f2f3f4",
 
     font: {
       focused: "#18181B",
       general: "#555",
       light: "#fff",
       muted: "#767676",
-      muted2: "#aaa",
+      muted2: "#999",
+      muted3: "#aaa",
       primary: "#393f93",
     },
   },

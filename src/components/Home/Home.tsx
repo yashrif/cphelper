@@ -13,7 +13,7 @@ export const Home = () => {
   const user = useAppSelector((state) => state.cf.user);
 
   useEffect(() => {
-    useDispatch(fetchUser("yashrif"));
+    useDispatch(fetchUser("Yashrif"));
   }, []);
 
   return (
@@ -36,7 +36,6 @@ export const Home = () => {
           >
             <Image
               src={user?.titlePhoto}
-              alt="avatar"
               boxSize={"xs"}
               objectFit={"cover"}
               borderRadius={"full"}
@@ -49,11 +48,9 @@ export const Home = () => {
               {user?.firstName} {user?.lastName}
             </Text>
 
-            {/* TODO: Change font to greyish */}
-
             <Text
               fontSize={"lg"}
-              color={"font.muted"}
+              color={"font.muted2"}
               fontWeight={"normal"}
               textTransform={"capitalize"}
             >

@@ -1,66 +1,76 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Box } from "@chakra-ui/react";
-import { CatmullRomCurve } from "react-svg-curve";
+import {
+  LineChart,
+  Line,
+  Legend,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
 import { fetchUserRatingHistory } from "../../store/cfSlice";
+import { Loading } from "../../common/types";
 
 export const RatingCurve = () => {
-  const RATIO_XY = 2;
-  const SVG_PX = 32;
-
+  const ANIMATION_DURATION = 2500;
   const userRatingHistory = useAppSelector(
     (state) => state.cf.userRatingHistory
   );
-  const ref = useRef<HTMLInputElement>(null);
+  const isUserRatingHistory = useAppSelector(
+    (state) => state.cf.loading.userRatingHistory
+  );
   const useDispatch = useAppDispatch();
-  const [graphWidth, setGraphWidth] = useState<number>(0);
-  const [maxY, setMaxY] = useState<number>(0);
-  const [diff, setDiff] = useState<number>(0);
-  const [data, setData] = useState<[number, number][]>([]);
+  const [isShowGraph, setIsShowGraph] = useState(false);
+  const [isShowDots, setIsShowDots] = useState(false);
 
   useEffect(() => {
     useDispatch(fetchUserRatingHistory("Anonymous_12"));
   }, []);
 
   useEffect(() => {
-    if (ref.current) setGraphWidth(ref.current.clientWidth);
-  }, [ref]);
+    const graphTimer = setTimeout(() => setIsShowGraph(true), 500);
+    const graphDotTimer = setTimeout(
+      () => setIsShowDots(true),
+      1000 + ANIMATION_DURATION
+    );
 
-  useEffect(() => {
-    if (userRatingHistory?.length > 0) {
-      setMaxY(userRatingHistory && Math.max(...userRatingHistory));
-      setDiff((graphWidth - SVG_PX) / userRatingHistory?.length);
-      setData(
-        userRatingHistory?.map((value, index) => [
-          index * diff + 5,
-          ((value || 10) * (graphWidth / RATIO_XY)) / (maxY + 10),
-        ])
-      );
-    }
-  }, [userRatingHistory]);
+    return () => {
+      clearTimeout(graphTimer);
+      clearTimeout(graphDotTimer);
+    };
+  }, [isUserRatingHistory]);
 
   return (
     <Box
-      ref={ref}
-      px={SVG_PX}
-      py="16"
-      bg="bg"
+      px={"32"}
+      py={"16"}
+      bg={"bg"}
       alignItems={"center"}
-      borderRadius={"2xl"}
+      borderRadius={"lg"}
       boxShadow={"0 0 2.4rem rgba(28, 126, 214, .1)"}
-      transform={"rotateX(180deg)"}
+      h={"300px"}
     >
-      {userRatingHistory?.length > 0 && (
-        <svg width="100%" height={`${graphWidth / RATIO_XY / 10}rem`}>
-          <CatmullRomCurve
-            alpha={0}
-            data={data}
-            showPoints={true}
-            strokeWidth={3}
-            stroke="#7048e8"
-          />
-        </svg>
+      {/* TODO: Add custom tooltip and legend */}
+      {isShowGraph && isUserRatingHistory === Loading.SUCEEDED && (
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={userRatingHistory}>
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="newRating"
+              stroke="#8884d8"
+              strokeWidth={2.5}
+              activeDot={{ r: 6 }}
+              dot={{ r: 3 }}
+              shapeRendering={"dot"}
+              isAnimationActive={!isShowDots}
+              animationDuration={ANIMATION_DURATION}
+              animationEasing={"linear"}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       )}
     </Box>
   );
