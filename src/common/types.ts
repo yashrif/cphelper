@@ -1,7 +1,7 @@
 export enum Loading {
   "IDLE",
   "PENDING",
-  "SUCEEDED",
+  "SUCCEEDED",
   "FAILED",
 }
 
@@ -19,7 +19,7 @@ export interface Submission {
   id: number;
   problem: Problem;
   programmingLanguage: string;
-  verdict:keyof typeof Verdict;
+  verdict: keyof typeof Verdict;
 }
 
 export interface User {
@@ -60,3 +60,5 @@ export enum Verdict {
   "TESTING",
   "REJECTED",
 }
+
+export type ColorArray = [number, number, number];

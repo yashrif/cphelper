@@ -1,22 +1,29 @@
 import React from "react";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import { Grid } from "@chakra-ui/react";
 
-import { Home } from "./Home/Home";
+import { Home } from "./home";
 import { SideBar } from "./reusable/SideBar";
+import { ProblemSet } from "./problemSet";
 
 export const App = () => {
   return (
     <Grid
-      height={"100vh"}
+      h={"100vh"}
+      w={"100vw"}
       py={"36"}
-      px={"36"}
-      mx={"auto"}
-      overflowX={"hidden"}
-      templateColumns={"2fr 11fr"}
-      columnGap={"36"}
+      px={"16"}
+      overflow={"hidden"}
+      templateColumns={"auto 1fr"}
+      columnGap={"16"}
     >
-      <SideBar />
-      <Home />
+      <HashRouter>
+        <SideBar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/problemset" element={<ProblemSet />} />
+        </Routes>
+      </HashRouter>
     </Grid>
   );
 };

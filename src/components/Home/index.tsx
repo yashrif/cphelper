@@ -1,29 +1,30 @@
 import React, { useEffect } from "react";
-import { Box, Flex, Grid, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Grid, Image as Img, Text } from "@chakra-ui/react";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { fetchUser } from "../../store/cfSlice";
+import { fetchUserRatingHistoryAndStatus } from "../../store/slices/cfSlice";
 import { BlobAnimation } from "./BlobAnimation";
 import { WaveAnimation } from "./WaveAnimation";
 import { RightPanel } from "./RightPanel";
 import { RatingCurve } from "./RatingCurve";
+import { generateColorPalette } from "../../store/slices/uiSlice";
 
 export const Home = () => {
   const useDispatch = useAppDispatch();
+  const handle = useAppSelector((state) => state.preferences.handle);
   const user = useAppSelector((state) => state.cf.user);
 
   useEffect(() => {
-    useDispatch(fetchUser("Yashrif"));
-  }, []);
+    handle && useDispatch(fetchUserRatingHistoryAndStatus(handle));
+  }, [handle]);
+
+  useEffect(() => {
+    useDispatch(generateColorPalette({ url: user?.titlePhoto }));
+  }, [user]);
 
   return (
-    <Grid
-      maxW={"container.xl"}
-      h={"full"}
-      templateColumns={"3fr 1fr"}
-      columnGap={"36"}
-    >
-      <Box>
+    <Grid w={"full"} h={"full"} templateColumns={"1fr auto"} columnGap={"36"}>
+      <Box w={"full"}>
         <WaveAnimation />
 
         <Flex columnGap={"96"}>
@@ -34,7 +35,7 @@ export const Home = () => {
             left={"40"}
             zIndex={"5"}
           >
-            <Image
+            <Img
               src={user?.titlePhoto}
               boxSize={"xs"}
               objectFit={"cover"}
@@ -43,8 +44,9 @@ export const Home = () => {
 
             {<BlobAnimation />}
           </Box>
+
           <Box py={"8"} fontWeight={"semibold"} lineHeight={"short"}>
-            <Text fontSize={"2xl"}>
+            <Text fontSize={"2xl"} textTransform={"capitalize"}>
               {user?.firstName} {user?.lastName}
             </Text>
 

@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Box, Flex, Text, Stack } from "@chakra-ui/react";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { IoTimerOutline, IoCloseCircleOutline } from "react-icons/io5";
 
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { fetchUserStatus } from "../../store/cfSlice";
+import { useAppSelector } from "../../hooks/hooks";
 import { Loading, Submission, Verdict } from "../../common/types";
 
 export const RecentActivity = () => {
@@ -12,11 +11,6 @@ export const RecentActivity = () => {
   const isUserStatusLoading = useAppSelector(
     (state) => state.cf.loading.userStatus
   );
-  const useDispatch = useAppDispatch();
-
-  useEffect(() => {
-    useDispatch(fetchUserStatus("Anonymous_12"));
-  }, []);
 
   const secondsToDate = (sec: number) => {
     const t = new Date(1970, 0, 1);
@@ -35,7 +29,7 @@ export const RecentActivity = () => {
   const renderActivityList = (activities: Submission[]) => {
     return activities.map((activity) => (
       <Flex
-        boxShadow={"0 0.4rem 1.2rem rgba(28, 126, 214, .08)"}
+        boxShadow={"0 0 1.2rem rgba(28, 126, 214, 0.1)"}
         borderRadius={"md"}
         px={"12"}
         py={"8"}
@@ -61,7 +55,7 @@ export const RecentActivity = () => {
   };
 
   return (
-    <Box>
+    <Box minWidth={"sm"} maxWidth={"lg"}>
       <Flex justifyContent={"space-between"} alignItems={"center"} mb={"16"}>
         <Text color="font.focused" fontSize={"2xl"} fontWeight={"semibold"}>
           Recent Activity
@@ -71,8 +65,8 @@ export const RecentActivity = () => {
         </Text>
       </Flex>
 
-      {isUserStatusLoading === Loading.SUCEEDED && (
-        <Stack gap={"8"}>{renderActivityList(userStatus)}</Stack>
+      {isUserStatusLoading === Loading.SUCCEEDED && (
+        <Stack gap={"0.4rem"}>{renderActivityList(userStatus)}</Stack>
       )}
     </Box>
   );

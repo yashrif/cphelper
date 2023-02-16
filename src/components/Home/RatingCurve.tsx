@@ -8,51 +8,54 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
-import { fetchUserRatingHistory } from "../../store/cfSlice";
+import { useAppSelector } from "../../hooks/hooks";
 import { Loading } from "../../common/types";
 
 export const RatingCurve = () => {
-  const ANIMATION_DURATION = 2500;
+  const GRAPH_ANIMATION_DELAY = 500;
+  const GRAPH_ANIMATION_DURATION = 2500;
   const userRatingHistory = useAppSelector(
     (state) => state.cf.userRatingHistory
   );
   const isUserRatingHistory = useAppSelector(
-    (state) => state.cf.loading.userRatingHistory
+    (state) => state.cf.loading.fetchUserRatingHistoryAndStatus
   );
-  const useDispatch = useAppDispatch();
   const [isShowGraph, setIsShowGraph] = useState(false);
-  const [isShowDots, setIsShowDots] = useState(false);
+  // const [isShowDots, setIsShowDots] = useState(false);
 
   useEffect(() => {
-    useDispatch(fetchUserRatingHistory("Anonymous_12"));
-  }, []);
+    const graphTimer = setTimeout(() => {
+      // setIsShowDots(false);
+      setIsShowGraph(true);
+    }, GRAPH_ANIMATION_DELAY);
 
-  useEffect(() => {
-    const graphTimer = setTimeout(() => setIsShowGraph(true), 500);
-    const graphDotTimer = setTimeout(
-      () => setIsShowDots(true),
-      1000 + ANIMATION_DURATION
-    );
+    // const graphDotTimer = setTimeout(
+    //   () => setIsShowDots(true),
+    //   GRAPH_ANIMATION_DELAY + GRAPH_ANIMATION_DURATION + 100
+    // );
 
     return () => {
       clearTimeout(graphTimer);
-      clearTimeout(graphDotTimer);
+      // clearTimeout(graphDotTimer);
     };
   }, [isUserRatingHistory]);
 
   return (
     <Box
-      px={"32"}
-      py={"16"}
-      bg={"bg"}
       alignItems={"center"}
+      bg={"bg"}
       borderRadius={"lg"}
       boxShadow={"0 0 2.4rem rgba(28, 126, 214, .1)"}
       h={"300px"}
+      px={"32"}
+      py={"16"}
+      w={"full"}
     >
-      {/* TODO: Add custom tooltip and legend */}
-      {isShowGraph && isUserRatingHistory === Loading.SUCEEDED && (
+      {/* TODO: Add custom tooltip and legend
+
+        Rerender with the changes of app width
+      */}
+      {isShowGraph && isUserRatingHistory === Loading.SUCCEEDED && (
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={userRatingHistory}>
             <Tooltip />
@@ -63,10 +66,10 @@ export const RatingCurve = () => {
               stroke="#8884d8"
               strokeWidth={2.5}
               activeDot={{ r: 6 }}
-              dot={{ r: 3 }}
+              dot={{ r: userRatingHistory?.length > 20 ? 2 : 3 }}
               shapeRendering={"dot"}
-              isAnimationActive={!isShowDots}
-              animationDuration={ANIMATION_DURATION}
+              // isAnimationActive={!isShowDots}
+              animationDuration={GRAPH_ANIMATION_DURATION}
               animationEasing={"linear"}
             />
           </LineChart>

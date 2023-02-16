@@ -11,11 +11,11 @@ export const theme = extendTheme({
 
   colors: {
     bg: "#fff",
-    bgContainer1: "#fafafc",
-    bgContainer2: "#f2f5fe",
-    bgContainer3: "#f7faff",
-    bgContainer4: "#f9fcfe",
-    bgContainer5: "#f2f3f4",
+    bg1: "#fafafc",
+    bg2: "#f2f5fe",
+    bg3: "#f7faff",
+    bg4: "#f9fcfe",
+    bg5: "#f2f3f4",
 
     font: {
       focused: "#18181B",

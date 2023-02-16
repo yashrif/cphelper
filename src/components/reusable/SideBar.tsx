@@ -1,42 +1,39 @@
 import React from "react";
 import { Box, Center, Flex, Text } from "@chakra-ui/react";
+import {
+  IoGridOutline,
+  IoCalendarClearOutline,
+  IoPieChartOutline,
+  IoPersonOutline,
+  IoLogOutOutline,
+} from "react-icons/io5";
 // import { Link } from "react-router-dom";
 
 export const SideBar = () => {
-  // const style = {
-  //   icon: {
-  //     "--ionicon-stroke-width": "4rem",
-  //   },
-  // };
-
   const NavBar = [
     {
-      icon: "grid-outline",
+      icon: <IoGridOutline size={"2rem"} />,
       title: "Dashboard",
       //   link: `${category}/dashboard`,
     },
     {
-      icon: "calendar-clear-outline",
+      icon: <IoCalendarClearOutline size={"2rem"} />,
       title: "Calendar",
       //   link: `${category}/calendar`,
     },
     {
-      icon: "pie-chart-outline",
+      icon: <IoPieChartOutline size={"2rem"} />,
       title: "Statistics",
       //   link: `${category}/statistics`,
     },
     {
-      icon: "person-outline",
+      icon: <IoPersonOutline size={"2rem"} />,
       title: "Profile",
       //   link: `${category}/profile`,
     },
+
     {
-      icon: "chatbox-outline",
-      title: "Chat",
-      //   link: `${category}/chat`,
-    },
-    {
-      icon: "log-out-outline",
+      icon: <IoLogOutOutline size={"2rem"} />,
       title: "Log out",
       //   link: "home",
       onClick: () => {
@@ -48,27 +45,25 @@ export const SideBar = () => {
   const renderedNavList = NavBar.map((value, index) => {
     return (
       //   <Link key={index} to={`/${value.link}`}>
-      <Flex key={index}
+      <Flex
+        key={index}
         cursor="pointer"
         alignItems="center"
         columnGap="12"
         px="24"
         py="16"
-        borderRadius="2xl"
+        borderRadius="lg"
         fontSize="lg"
         fontWeight="medium"
         color="font.muted"
         transition="all 0.3s"
         _hover={{
           color: "font.focused",
-          backgroundColor: "bgDarker",
+          backgroundColor: "bg2",
         }}
         onClick={value.onClick}
       >
-        {/* <ion-icon
-            name={value.icon}
-            style={{ fontSize: "2rem", ...style.icon }}
-          ></ion-icon> */}
+        {value.icon}
         <Text>{value.title}</Text>
       </Flex>
       //  </Link>
@@ -84,13 +79,18 @@ export const SideBar = () => {
           }
         `}
       </style>
-      <Center className="dashboard-navbar" h="full" alignItems="start">
+      <Center
+        className="dashboard-navbar"
+        h="full"
+        minW={"5rem"}
+        maxW={"2xl"}
+        alignItems="start"
+      >
         <Flex
-          mx="12"
-          pb="36"
-          direction="column"
           h="full"
+          direction="column"
           justifyContent="space-between"
+          pb="36"
         >
           <Box>{renderedNavList.slice(0, -1)}</Box>
           <Box>{renderedNavList.slice(-1)}</Box>
