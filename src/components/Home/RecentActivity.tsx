@@ -55,12 +55,12 @@ export const RecentActivity = () => {
   };
 
   return (
-    <Box minWidth={"sm"} maxWidth={"lg"}>
+    <Box minW={"sm"} maxW={"lg"}>
       <Flex justifyContent={"space-between"} alignItems={"center"} mb={"16"}>
         <Text color="font.focused" fontSize={"2xl"} fontWeight={"semibold"}>
           Recent Activity
         </Text>
-        <Text color={"blue.400"} fontSize={"md"}>
+        <Text color={"brand.500"} fontSize={"md"}>
           View More
         </Text>
       </Flex>

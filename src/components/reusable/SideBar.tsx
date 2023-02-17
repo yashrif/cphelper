@@ -85,12 +85,13 @@ export const SideBar = () => {
         minW={"5rem"}
         maxW={"2xl"}
         alignItems="start"
+        px={"16"}
       >
         <Flex
           h="full"
           direction="column"
           justifyContent="space-between"
-          pb="36"
+          // pb="36"
         >
           <Box>{renderedNavList.slice(0, -1)}</Box>
           <Box>{renderedNavList.slice(-1)}</Box>

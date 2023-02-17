@@ -10,6 +10,7 @@ export interface Problem {
   index: string;
   name: string;
   rating: number;
+  solvedCount: number;
   tags: string[];
   type: string;
 }

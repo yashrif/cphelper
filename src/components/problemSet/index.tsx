@@ -1,15 +1,23 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { Box, Grid } from "@chakra-ui/react";
 
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { fetchProblemSet } from "../../store/slices/cfSlice";
+import { ProblemTable } from "./ProblemTable";
+import { ProblemFilter } from "./ProblemFilter";
 
 export const ProblemSet = () => {
-  const useDispatch = useAppDispatch();
-  const problemSet = useAppSelector((state) => state.cf.problemSet);
-
-  useEffect(() => {
-    useDispatch(fetchProblemSet());
-  }, []);
-
-  return <div>problem</div>;
+  return (
+    <Grid
+      h={"full"}
+      w={"full"}
+      overflow={"hidden"}
+      gridTemplateColumns={"1fr auto"}
+      columnGap={"32"}
+      pr={"16"}
+    >
+      <ProblemTable />
+      <Box minW={"md"} maxW={"lg"}>
+        <ProblemFilter />
+      </Box>
+    </Grid>
+  );
 };

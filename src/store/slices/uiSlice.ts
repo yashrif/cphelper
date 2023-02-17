@@ -11,9 +11,15 @@ const initialState = {} as Ui;
 
 export const generateColorPalette = createAsyncThunk(
   "ui/generateColorPalette",
-  async ({ url, colors = 5 }: { url: string; colors?: number }) => {
+  async ({
+    url,
+    numberOfColors = 5,
+  }: {
+    url: string;
+    numberOfColors?: number;
+  }) => {
     const colorThief = new ColorThief();
-    return await colorThief.getPaletteAsync(url, colors);
+    return await colorThief.getPaletteAsync(url, numberOfColors);
   }
 );
 

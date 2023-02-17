@@ -10,10 +10,11 @@ import apiCf from "../../apis/apiCf";
 interface ProblemsFetchState {
   loading: {
     problemSet: Loading;
+    problemTags: Loading;
     user: Loading;
     userRatingHistory: Loading;
     userStatus: Loading;
-    fetchUserRatingHistoryAndStatus: Loading;
+    userRatingHistoryAndStatus: Loading;
   };
   problemSet: Problem[];
   problemTags: string[];
@@ -31,9 +32,11 @@ interface ProblemsFetchState {
 const initialState = {
   loading: {
     problemSet: Loading.IDLE,
+    problemTags: Loading.IDLE,
     user: Loading.IDLE,
     userRatingHistory: Loading.IDLE,
-    fetchUserRatingHistoryAndStatus: Loading.IDLE,
+    userStatus: Loading.IDLE,
+    userRatingHistoryAndStatus: Loading.IDLE,
   },
 } as ProblemsFetchState;
 
@@ -47,11 +50,16 @@ export const fetchProblemSet = createAsyncThunk(
     const params = new URLSearchParams();
     tags.map((tag: string) => params.append("tags", tag));
 
-    return (
+    const response = (
       await apiCf.get("problemset.problems", {
         params: params,
       })
-    ).data.result.problems;
+    ).data.result;
+
+    return response.problems.map((problem: Problem, index: number) => {
+      problem.solvedCount = response.problemStatistics[index].solvedCount;
+      return problem;
+    });
   }
 );
 
@@ -82,7 +90,6 @@ export const fetchProblemRating = createAsyncThunk(
     const state = getState() as RootState;
 
     const ratings = _.chain(state.cf.problemSet).map("rating").uniq().value();
-    // const points = _.chain(state.cf.problemSet).map("points").uniq().value();
 
     return {
       max: _.max(ratings) as number,
@@ -187,12 +194,21 @@ const problemSlice = createSlice({
 
     /* ------------------------------ Problem Tags ------------------------------ */
 
+    builder.addCase(fetchProblemTags.pending, (state) => {
+      state.loading.problemTags = Loading.PENDING;
+    });
+
     builder.addCase(
       fetchProblemTags.fulfilled,
       (state, action: PayloadAction<string[]>) => {
+        state.loading.problemTags = Loading.SUCCEEDED;
         state.problemTags = action.payload;
       }
     );
+
+    builder.addCase(fetchProblemTags.rejected, (state) => {
+      state.loading.problemTags = Loading.FAILED;
+    });
 
     /* ----------------------------- Problem Rating ----------------------------- */
 
@@ -258,15 +274,15 @@ const problemSlice = createSlice({
     /* --------------------- fetchUserRatingHistoryAndStatus -------------------- */
 
     builder.addCase(fetchUserRatingHistoryAndStatus.pending, (state) => {
-      state.loading.fetchUserRatingHistoryAndStatus = Loading.PENDING;
+      state.loading.userRatingHistoryAndStatus = Loading.PENDING;
     });
 
     builder.addCase(fetchUserRatingHistoryAndStatus.fulfilled, (state) => {
-      state.loading.fetchUserRatingHistoryAndStatus = Loading.SUCCEEDED;
+      state.loading.userRatingHistoryAndStatus = Loading.SUCCEEDED;
     });
 
     builder.addCase(fetchUserRatingHistoryAndStatus.rejected, (state) => {
-      state.loading.fetchUserRatingHistoryAndStatus = Loading.FAILED;
+      state.loading.userRatingHistoryAndStatus = Loading.FAILED;
     });
   },
 });

@@ -12,7 +12,6 @@ export const App = () => {
       h={"100vh"}
       w={"100vw"}
       py={"36"}
-      px={"16"}
       overflow={"hidden"}
       templateColumns={"auto 1fr"}
       columnGap={"16"}

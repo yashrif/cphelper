@@ -18,7 +18,7 @@ export const RatingCurve = () => {
     (state) => state.cf.userRatingHistory
   );
   const isUserRatingHistory = useAppSelector(
-    (state) => state.cf.loading.fetchUserRatingHistoryAndStatus
+    (state) => state.cf.loading.userRatingHistoryAndStatus
   );
   const [isShowGraph, setIsShowGraph] = useState(false);
   // const [isShowDots, setIsShowDots] = useState(false);

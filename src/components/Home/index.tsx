@@ -23,7 +23,15 @@ export const Home = () => {
   }, [user]);
 
   return (
-    <Grid w={"full"} h={"full"} templateColumns={"1fr auto"} columnGap={"36"}>
+    <Grid
+      w={"full"}
+      h={"full"}
+      pr={"16"}
+      templateColumns={"1fr auto"}
+      columnGap={"32"}
+      overflowX={"hidden"}
+      overflowY={"scroll"}
+    >
       <Box w={"full"}>
         <WaveAnimation />
 

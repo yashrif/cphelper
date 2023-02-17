@@ -10,12 +10,36 @@ export const theme = extendTheme({
   },
 
   colors: {
+    primary: {
+      100: "#d2e5f7",
+      200: "#a4cbef",
+      300: "#77b2e6",
+      400: "#4998de",
+      500: "#1c7ed6",
+      600: "#1665ab",
+      700: "#114c80",
+      800: "#0b3256",
+      900: "#06192b",
+    },
+
+    secondary: {
+      100: "#fae5d3",
+      200: "#f5cba7",
+      300: "#f0b27a",
+      400: "#eb984e",
+      500: "#e67e22",
+      600: "#b8651b",
+      700: "#8a4c14",
+      800: "#5c320e",
+      900: "#2e1907",
+    },
+
     bg: "#fff",
-    bg1: "#fafafc",
-    bg2: "#f2f5fe",
-    bg3: "#f7faff",
-    bg4: "#f9fcfe",
-    bg5: "#f2f3f4",
+    bg2: "#fafafc",
+    bg3: "#f2f5fe",
+    bg4: "#f7faff",
+    bg5: "#f9fcfe",
+    bg6: "#f2f3f4",
 
     font: {
       focused: "#18181B",
@@ -31,7 +55,6 @@ export const theme = extendTheme({
   // fonts: {
   //   body: "Rubik, system-ui, sans-serif",
   //   heading: "Rubik, Georgia, serif",
-  //   mono: "Menlo, monospace",
   // },
 
   fontSizes: {
