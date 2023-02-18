@@ -9,6 +9,7 @@ import apiCf from "../../apis/apiCf";
 
 interface ProblemsFetchState {
   loading: {
+    problemRating: number;
     problemSet: Loading;
     problemTags: Loading;
     user: Loading;
@@ -212,8 +213,17 @@ const problemSlice = createSlice({
 
     /* ----------------------------- Problem Rating ----------------------------- */
 
+    builder.addCase(fetchProblemRating.pending, (state) => {
+      state.loading.problemRating = Loading.PENDING;
+    });
+
     builder.addCase(fetchProblemRating.fulfilled, (state, action) => {
+      state.loading.problemRating = Loading.SUCCEEDED;
       state.problemRating = action.payload;
+    });
+
+    builder.addCase(fetchProblemRating.rejected, (state) => {
+      state.loading.problemRating = Loading.FAILED;
     });
 
     /* ---------------------------------- User ---------------------------------- */

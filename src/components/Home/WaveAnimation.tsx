@@ -8,7 +8,7 @@ import { useAppSelector } from "../../hooks/hooks";
 
 export const WaveAnimation = () => {
   const profileColorPalette = useAppSelector(
-    (state) => state.ui.profileColorPalette
+    (state) => state.component.profileColorPalette
   );
 
   useEffect(() => {

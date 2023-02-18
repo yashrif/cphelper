@@ -7,7 +7,7 @@ import { useAppSelector } from "../../hooks/hooks";
 
 export const BlobAnimation = () => {
   const profileColorPalette = useAppSelector(
-    (state) => state.ui.profileColorPalette
+    (state) => state.component.profileColorPalette
   );
 
   const style = {

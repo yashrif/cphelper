@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { Box, Select, Text } from "@chakra-ui/react";
-import _ from "lodash";
+import React, { useState } from "react";
+import { Box, Spinner, Text } from "@chakra-ui/react";
 
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { fetchProblemTags } from "../../store/slices/cfSlice";
+import { RatingSlider } from "./RatingSlider";
+import { TagFilter } from "./TagFilter";
+import { AdditionalOptions } from "./AdditionalOptions";
 
 export const ProblemFilter = () => {
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const tags = useAppSelector((state) => state.cf.problemTags);
-  const useDispatch = useAppDispatch();
-
-  useEffect(() => {
-    useDispatch(fetchProblemTags());
-  }, []);
-
-  console.log(selectedTags);
+  const [isLoadingFinished, setIsLoadingFinished] = useState([false, false]);
 
   return (
-    <Box backgroundColor={"bg2"} px={"16"} py={"8"} borderRadius={"lg"}>
+    <Box
+      backgroundColor={"bg2"}
+      px={"16"}
+      py={"12"}
+      borderRadius={"lg"}
+      position={"relative"}
+    >
       <Text
         color="font.focused"
         fontSize={"2xl"}
@@ -26,22 +24,38 @@ export const ProblemFilter = () => {
       >
         Filter Problems
       </Text>
-      
-      <Select
-        placeholder="Select option"
-        size={"lg"}
-        fontSize={"lg"}
-        fontWeight={"medium"}
-        onChange={(e) => {
-          setSelectedTags((prevState) => [...prevState, e?.target.value]);
-        }}
+
+      {!isLoadingFinished[0] && !isLoadingFinished[1] ? (
+        <Box
+          position={"absolute"}
+          top={"50%"}
+          left={"50%"}
+          transform={"translate(-50%, -50%)"}
+        >
+          <Spinner
+            thickness=".3rem"
+            speed="0.5s"
+            emptyColor="primary.100"
+            color="primary.500"
+            size="xl"
+          />
+        </Box>
+      ) : null}
+
+      <Box
+        alignItems={"stretch"}
+        opacity={isLoadingFinished[0] && isLoadingFinished[1] ? 1 : 0}
       >
-        {tags?.map((tag, index) => (
-          <option key={index} value={tag}>
-            {_.capitalize(tag)}
-          </option>
-        ))}
-      </Select>
+        <Box mb={"24"}>
+          <RatingSlider setIsLoadingFinished={setIsLoadingFinished} />
+        </Box>
+
+        <Box mb={"32"}>
+          <TagFilter setIsLoadingFinished={setIsLoadingFinished} />
+        </Box>
+
+        <AdditionalOptions />
+      </Box>
     </Box>
   );
 };

@@ -7,7 +7,7 @@ import { BlobAnimation } from "./BlobAnimation";
 import { WaveAnimation } from "./WaveAnimation";
 import { RightPanel } from "./RightPanel";
 import { RatingCurve } from "./RatingCurve";
-import { generateColorPalette } from "../../store/slices/uiSlice";
+import { generateColorPalette } from "../../store/slices/componentSlice";
 
 export const Home = () => {
   const useDispatch = useAppDispatch();
@@ -27,6 +27,7 @@ export const Home = () => {
       w={"full"}
       h={"full"}
       pr={"16"}
+      py={"36"}
       templateColumns={"1fr auto"}
       columnGap={"32"}
       overflowX={"hidden"}
@@ -72,7 +73,9 @@ export const Home = () => {
         <RatingCurve />
       </Box>
 
-      <RightPanel />
+      <Box minW={"26rem"} maxW={"lg"}>
+        <RightPanel />
+      </Box>
     </Grid>
   );
 };

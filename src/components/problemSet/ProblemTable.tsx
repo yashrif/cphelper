@@ -1,40 +1,60 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Table, Tbody, Td, Th, Thead, Tr, Text } from "@chakra-ui/react";
-import { lastIndexOf } from "lodash";
+import _ from "lodash";
 
 import { Loading, Problem } from "../../common/types";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { fetchProblemSet } from "../../store/slices/cfSlice";
 
 export const ProblemTable = () => {
+  const navigate = useNavigate();
+
   const PROBLEM_NAME_MAX_LENGTH = 25;
   const PROBLEM_TAG_MAX_LENGTH = 40;
-  const [numberOfProblemsPerPage, setNumberOfProblemsPerPage] = useState(20);
+
+  const [filteredProblemSetAll, setFilteredProblemSetAll] = useState<Problem[]>(
+    []
+  );
+  const [filteredProblemSet, setFilteredProblemSet] = useState<Problem[]>([]);
   const [problemSetIndexStart, setProblemSetIndexStart] = useState(0);
+
   const useDispatch = useAppDispatch();
-  const problemSet = useAppSelector((state) => {
-    {
-      const problemSet = state.cf.problemSet;
-      if (problemSet) {
-        // const endingIndex =
-        //   problemSetIndexStart + numberOfProblemsPerPage >= problemSet?.length
-        //     ? problemSet.length - 1
-        //     : problemSetIndexStart + numberOfProblemsPerPage;
-
-        return state.cf.problemSet.slice(
-          problemSetIndexStart,
-          problemSetIndexStart + numberOfProblemsPerPage
-        );
-      }
-
-      return [];
-    }
-  });
+  const selectedProblemTags = useAppSelector(
+    (state) => state.component.selectedProblemTags
+  );
+  const problemSet = useAppSelector((state) => state.cf.problemSet);
   const isProblemSet = useAppSelector((state) => state.cf.loading.problemSet);
+  const problemRatingRange = useAppSelector(
+    (state) => state.component.problemRatingRange
+  );
+  const problemsPerPage = useAppSelector(
+    (state) => state.component.problemsPerPage
+  );
 
   useEffect(() => {
-    useDispatch(fetchProblemSet());
-  }, []);
+    useDispatch(fetchProblemSet(selectedProblemTags));
+  }, [selectedProblemTags]);
+
+  useEffect(() => {
+    setFilteredProblemSetAll(
+      _.filter(
+        problemSet,
+        (value) =>
+          value.rating >= problemRatingRange[0] &&
+          value.rating <= problemRatingRange[1]
+      )
+    );
+  }, [problemRatingRange, problemSet]);
+
+  useEffect(() => {
+    setFilteredProblemSet(
+      filteredProblemSetAll.slice(
+        problemSetIndexStart,
+        problemSetIndexStart + problemsPerPage
+      )
+    );
+  }, [filteredProblemSetAll, problemsPerPage]);
 
   const makeSlice = (...args: string[]) => {
     const tagString = args.join(", ");
@@ -49,7 +69,7 @@ export const ProblemTable = () => {
       }
 
       const lastIndex =
-        lastIndexOf(
+        _.lastIndexOf(
           tagString.slice(indexStart, indexStart + PROBLEM_TAG_MAX_LENGTH),
           ","
         ) + 1;
@@ -66,7 +86,21 @@ export const ProblemTable = () => {
 
   const renderProblems = (problems: Problem[]) =>
     problems.map((problem, index) => (
-      <Tr key={index} fontSize={"lg"}>
+      <Tr
+        key={index}
+        fontSize={"lg"}
+        cursor={"pointer"}
+        transition={"all .3s"}
+        overflow={"hidden"}
+        _hover={{ transform: "scale(1.03)" }}
+        onClick={() => {
+          // useDispatch(
+          //   setSelectedProblemUrl([problem.contestId.toString(), problem.index])
+          // );
+
+          navigate(`/problemset/problem/${problem.contestId}/${problem.index}`);
+        }}
+      >
         <Td px={"12"} textAlign={"center"}>
           {problem.contestId + problem.index}
         </Td>
@@ -89,19 +123,21 @@ export const ProblemTable = () => {
     ));
 
   return (
-    <Box height={"full"} overflowY={"scroll"} pr={"0"}>
+    <Box height={"full"} overflowX={"hidden"} overflowY={"scroll"} pr={"0"}>
       {isProblemSet === Loading.SUCCEEDED && (
-        <Table variant="striped" colorScheme="secondary" size={"lg"}>
+        <Table variant="striped" colorScheme="primary" size={"lg"}>
           <Thead>
             <Tr>
               {["Id", "Problem Name", "Tags", "Rating", "Solved Count"].map(
                 (title, index) => (
                   <Th
                     key={index}
+                    color={"primary.600"}
                     fontSize={"xl"}
                     textTransform={"capitalize"}
-                    px={"12"}
-                    py={"8"}
+                    textAlign={"center"}
+                    px={"8"}
+                    py={"16"}
                   >
                     {title}
                   </Th>
@@ -109,7 +145,7 @@ export const ProblemTable = () => {
               )}
             </Tr>
           </Thead>
-          <Tbody>{renderProblems(problemSet)}</Tbody>
+          <Tbody>{renderProblems(filteredProblemSet)}</Tbody>
         </Table>
       )}
     </Box>

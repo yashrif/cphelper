@@ -13,9 +13,11 @@ export const ProblemSet = () => {
       gridTemplateColumns={"1fr auto"}
       columnGap={"32"}
       pr={"16"}
+      py={"36"}
     >
       <ProblemTable />
-      <Box minW={"md"} maxW={"lg"}>
+
+      <Box w={"26rem"}>
         <ProblemFilter />
       </Box>
     </Grid>

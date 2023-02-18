@@ -3,12 +3,12 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import cfSlice from "./slices/cfSlice";
 import preferencesSlice from "./slices/preferencesSlice";
-import uiSlice from "./slices/uiSlice";
+import componentSlice from "./slices/componentSlice";
 
 export const store = configureStore({
   reducer: {
     cf: cfSlice,
-    ui: uiSlice,
+    component: componentSlice,
     preferences: preferencesSlice,
   },
   middleware: (getDefaultMiddleware) =>

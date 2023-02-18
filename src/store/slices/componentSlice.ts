@@ -3,14 +3,19 @@ import ColorThief from "color-thief-ts";
 
 import { ColorArray } from "../../common/types";
 
-interface Ui {
+interface Component {
+  problemRatingRange: [number, number];
+  problemsPerPage: number;
   profileColorPalette: ColorArray[];
+  selectedProblemTags: string[];
 }
 
-const initialState = {} as Ui;
+const initialState = {
+  problemsPerPage: 20,
+} as Component;
 
 export const generateColorPalette = createAsyncThunk(
-  "ui/generateColorPalette",
+  "component/generateColorPalette",
   async ({
     url,
     numberOfColors = 5,
@@ -27,10 +32,22 @@ export const generateColorPalette = createAsyncThunk(
 /*                                   Slices                                   */
 /* -------------------------------------------------------------------------- */
 
-const uiSlice = createSlice({
-  name: "ui",
+const componentSlice = createSlice({
+  name: "component",
   initialState,
-  reducers: {},
+  reducers: {
+    updateSelectedProblemTags: (state, action: PayloadAction<string[]>) => {
+      state.selectedProblemTags = action.payload;
+    },
+
+    setProblemRatingRange: (state, action: PayloadAction<[number, number]>) => {
+      state.problemRatingRange = action.payload;
+    },
+
+    setProblemsPerPage: (state, action: PayloadAction<number>) => {
+      state.problemsPerPage = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(
       generateColorPalette.fulfilled,
@@ -41,4 +58,9 @@ const uiSlice = createSlice({
   },
 });
 
-export default uiSlice.reducer;
+export default componentSlice.reducer;
+export const {
+  setProblemRatingRange,
+  setProblemsPerPage,
+  updateSelectedProblemTags,
+} = componentSlice.actions;
