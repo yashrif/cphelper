@@ -11,13 +11,13 @@ export const ProblemSet = () => {
       w={"full"}
       overflow={"hidden"}
       gridTemplateColumns={"1fr auto"}
-      columnGap={"32"}
-      pr={"16"}
-      py={"36"}
+      // columnGap={"24"}
     >
-      <ProblemTable />
+      <Box px={"16"} py={"36"}>
+        <ProblemTable />
+      </Box>
 
-      <Box w={"26rem"}>
+      <Box minW={"md"} maxW={"lg"} px={"16"} py={"36"}>
         <ProblemFilter />
       </Box>
     </Grid>

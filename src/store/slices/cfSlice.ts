@@ -288,7 +288,13 @@ const problemSlice = createSlice({
     });
 
     builder.addCase(fetchUserRatingHistoryAndStatus.fulfilled, (state) => {
-      state.loading.userRatingHistoryAndStatus = Loading.SUCCEEDED;
+      if (
+        state.loading.user === Loading.SUCCEEDED &&
+        state.loading.userRatingHistory === Loading.SUCCEEDED &&
+        state.loading.userStatus === Loading.SUCCEEDED
+      )
+        state.loading.userRatingHistoryAndStatus = Loading.SUCCEEDED;
+      else state.loading.userRatingHistoryAndStatus = Loading.FAILED;
     });
 
     builder.addCase(fetchUserRatingHistoryAndStatus.rejected, (state) => {

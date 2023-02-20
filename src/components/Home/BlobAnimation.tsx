@@ -1,13 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Box } from "@chakra-ui/react";
 import kute from "kute.js";
 
 import { useAppSelector } from "../../hooks/hooks";
+import { Loading } from "../../common/types";
 
 /* ---------------- TODO: Randomize svg's colors using state ---------------- */
 
 export const BlobAnimation = () => {
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
   const profileColorPalette = useAppSelector(
     (state) => state.component.profileColorPalette
+  );
+  const isProfileColorPalette = useAppSelector(
+    (state) => state.component.loading.profileColorPalette
   );
 
   const style = {
@@ -30,9 +37,14 @@ export const BlobAnimation = () => {
       .start();
   }, []);
 
+  useEffect(() => {
+    if (isProfileColorPalette === Loading.SUCCEEDED) setIsFirstRender(false);
+  }, [isProfileColorPalette]);
+
   return (
-    <>
-      {/* Change blob color */}
+    <Box opacity={!isFirstRender ? 1 : 0}>
+      {/* TODO: Change blob color */}
+
       <svg
         style={style}
         className="blob"
@@ -73,6 +85,6 @@ export const BlobAnimation = () => {
           ></path>
         </g>
       </svg>
-    </>
+    </Box>
   );
 };

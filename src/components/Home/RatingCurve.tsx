@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box } from "@chakra-ui/react";
+import { Box, Spinner } from "@chakra-ui/react";
 import {
   LineChart,
   Line,
@@ -41,21 +41,22 @@ export const RatingCurve = () => {
   }, [isUserRatingHistory]);
 
   return (
+    /*
+      TODO: Add custom tooltip and legend
+      Rerender with the changes of app width
+    */
     <Box
       alignItems={"center"}
       bg={"bg"}
       borderRadius={"lg"}
-      boxShadow={"0 0 2.4rem rgba(28, 126, 214, .1)"}
+      boxShadow={"0rem 0rem 3.2rem rgba(28, 126, 214, .1)"}
       h={"300px"}
       px={"32"}
       py={"16"}
       w={"full"}
+      position={"relative"}
     >
-      {/* TODO: Add custom tooltip and legend
-
-        Rerender with the changes of app width
-      */}
-      {isShowGraph && isUserRatingHistory === Loading.SUCCEEDED && (
+      {isShowGraph && isUserRatingHistory === Loading.SUCCEEDED ? (
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={userRatingHistory}>
             <Tooltip />
@@ -74,6 +75,21 @@ export const RatingCurve = () => {
             />
           </LineChart>
         </ResponsiveContainer>
+      ) : (
+        <Box
+          position={"absolute"}
+          top={"50%"}
+          left={"50%"}
+          transform={"translate(-50%, -50%)"}
+        >
+          <Spinner
+            thickness=".3rem"
+            speed="0.5s"
+            emptyColor="primary.100"
+            color="primary.500"
+            size="xl"
+          />
+        </Box>
       )}
     </Box>
   );

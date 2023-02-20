@@ -10,7 +10,7 @@
     "build:web": "tsc && vite build",
     "preview": "vite preview",
     "build:desktop": "tsc -p core/tsconfig.json",
-    "start:desktop": "npm run build:desktop && electron build/main.js",
+    "start:desktop": "npm run build:desktop && electron dist/main.js",
     "migrate": "cd core && npx prisma migrate dev --name init",
     "studio": "cd core && npx prisma studio",
     "build": "electron-builder --x64",

@@ -1,23 +1,12 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import { useParams } from "react-router-dom";
 import { Box } from "@chakra-ui/react";
 
-import { cfProblemURL, proxyUrl } from "../../common/utils";
+import { cfProblemURL } from "../../common/utils";
 import "./Problem.css";
 
 export const Problem = () => {
-  const [pageData, setPageData] = useState(Object);
-
   const { id, index } = useParams();
-
-  useEffect(() => {
-    (async () => {
-      setPageData(
-        await axios.get(`${proxyUrl}/${cfProblemURL}/${id}/${index}`)
-      );
-    })();
-  }, []);
 
   return (
     <>
@@ -33,10 +22,18 @@ export const Problem = () => {
         h={"full"}
         w={"full"}
         pl={"16"}
-        pr={"32"}
+        // pr={"32"}
         overflowY={"scroll"}
-        dangerouslySetInnerHTML={{ __html: pageData?.data }}
-      ></Box>
+      >
+        <webview
+          src={`${cfProblemURL}/${id}/${index}`}
+          style={{ height: "100%", width: "100%" }}
+        ></webview>
+        <webview
+          src={`${cfProblemURL}`}
+          style={{ height: "100%", width: "100%" }}
+        ></webview>
+      </Box>
     </>
   );
 };

@@ -1,9 +1,12 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import ColorThief from "color-thief-ts";
 
-import { ColorArray } from "../../common/types";
+import { ColorArray, Loading } from "../../common/types";
 
 interface Component {
+  loading: {
+    profileColorPalette: Loading;
+  };
   problemRatingRange: [number, number];
   problemsPerPage: number;
   profileColorPalette: ColorArray[];
@@ -11,6 +14,9 @@ interface Component {
 }
 
 const initialState = {
+  loading: {
+    profileColorPalette: Loading.IDLE,
+  },
   problemsPerPage: 20,
 } as Component;
 
@@ -49,12 +55,23 @@ const componentSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    /* ------------------------------ Color Palette ----------------------------- */
+
+    builder.addCase(generateColorPalette.pending, (state) => {
+      state.loading.profileColorPalette = Loading.PENDING;
+    });
+
     builder.addCase(
       generateColorPalette.fulfilled,
       (state, action: PayloadAction<ColorArray[]>) => {
+        state.loading.profileColorPalette = Loading.SUCCEEDED;
         state.profileColorPalette = action.payload;
       }
     );
+
+    builder.addCase(generateColorPalette.rejected, (state) => {
+      state.loading.profileColorPalette = Loading.FAILED;
+    });
   },
 });
 

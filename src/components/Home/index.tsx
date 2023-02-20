@@ -26,14 +26,20 @@ export const Home = () => {
     <Grid
       w={"full"}
       h={"full"}
-      pr={"16"}
-      py={"36"}
+      // py={"36"}
       templateColumns={"1fr auto"}
-      columnGap={"32"}
-      overflowX={"hidden"}
-      overflowY={"scroll"}
+      // columnGap={"32"}
+      overflow={"hidden"}
+      // overflowY={"scroll"}
     >
-      <Box w={"full"}>
+      <style>
+        {`
+          ::-webkit-scrollbar {
+            display: none;
+          }
+        `}
+      </style>
+      <Box w={"full"} overflowY={"scroll"} px={"16"} py={"36"}>
         <WaveAnimation />
 
         <Flex columnGap={"96"}>
@@ -73,7 +79,7 @@ export const Home = () => {
         <RatingCurve />
       </Box>
 
-      <Box minW={"26rem"} maxW={"lg"}>
+      <Box minW={"md"} maxW={"lg"} px={"16"} py={"36"}>
         <RightPanel />
       </Box>
     </Grid>

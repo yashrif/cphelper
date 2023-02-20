@@ -85,6 +85,7 @@ export const SideBar = () => {
         `}
       </style>
       <Center
+        boxShadow={"0.2rem 0 3.6rem rgba(28, 126, 214, .08)"}
         className="dashboard-navbar"
         h="full"
         minW={"5rem"}
