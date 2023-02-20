@@ -1,7 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Table, Tbody, Td, Th, Thead, Tr, Text } from "@chakra-ui/react";
-import _ from "lodash";
+import {
+  Box,
+  HStack,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  Text,
+  Tag,
+  TagLabel,
+} from "@chakra-ui/react";
+import _, { size } from "lodash";
 
 import { Loading, Problem } from "../../common/types";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
@@ -84,6 +96,26 @@ export const ProblemTable = () => {
     return newTagString;
   };
 
+  const renderTags = (tags: string[]) =>
+    tags.map((tag, index) => (
+      <Tag
+        key={index}
+        size={"md"}
+        borderRadius="full"
+        variant="solid"
+        // colorScheme="primary"
+        // backgroundColor={"primary.400"}
+        background={
+          "linear-gradient(90deg, hsla(210, 90%, 80%, .85) 0%, hsla(212, 93%, 49%, .9) 100%)"
+        }
+        m={"0 !important"}
+      >
+        <TagLabel px={"4"} py={"2"}>
+          {tag}
+        </TagLabel>
+      </Tag>
+    ));
+
   const renderProblems = (problems: Problem[]) =>
     problems.map((problem, index) => (
       <Tr
@@ -92,7 +124,12 @@ export const ProblemTable = () => {
         cursor={"pointer"}
         transition={"all .3s"}
         overflow={"hidden"}
-        _hover={{ transform: "scale(1.03)" }}
+        backgroundColor={"transparent"}
+        _hover={{
+          transform: "scale(1.03)",
+          background:
+            "linear-gradient(90deg, hsla(210, 90%, 80%, 0.5) 0%, hsla(212, 93%, 49%, 0.75) 100%)",
+        }}
         onClick={() => {
           // useDispatch(
           //   setSelectedProblemUrl([problem.contestId.toString(), problem.index])
@@ -101,22 +138,27 @@ export const ProblemTable = () => {
           navigate(`/problemset/problem/${problem.contestId}/${problem.index}`);
         }}
       >
-        <Td px={"12"} textAlign={"center"}>
+        <Td px={"12"} textAlign={"center"} borderLeftRadius={"md"}>
           {problem.contestId + problem.index}
         </Td>
         <Td px={"12"}>
-          {problem.name.slice(0, PROBLEM_NAME_MAX_LENGTH) +
-            (problem.name.length > PROBLEM_NAME_MAX_LENGTH ? "..." : "")}
+          <Text mb={"12"}>
+            {problem.name.slice(0, PROBLEM_NAME_MAX_LENGTH) +
+              (problem.name.length > PROBLEM_NAME_MAX_LENGTH ? "..." : "")}
+          </Text>
+          <HStack gap={"4"} wrap={"wrap"} justifyContent={"end"}>
+            {renderTags(problem.tags)}
+          </HStack>
         </Td>
-        <Td px={"12"} fontSize={"md"}>
+        {/* <Td px={"12"} fontSize={"md"}>
           {makeSlice(...problem.tags).map((tag, index) => (
             <Text key={index}>{tag}</Text>
           ))}
-        </Td>
+        </Td> */}
         <Td px={"12"} textAlign={"center"}>
           {problem.rating}
         </Td>
-        <Td px={"12"} textAlign={"center"}>
+        <Td px={"12"} textAlign={"center"} borderRightRadius={"md"}>
           {problem.solvedCount}
         </Td>
       </Tr>
@@ -125,10 +167,14 @@ export const ProblemTable = () => {
   return (
     <Box height={"full"} overflowX={"hidden"} overflowY={"scroll"} pr={"0"}>
       {isProblemSet === Loading.SUCCEEDED && (
-        <Table variant="striped" colorScheme="primary" size={"lg"}>
+        <Table
+          colorScheme="problemTable"
+          size={"lg"}
+          style={{ borderCollapse: "collapse" }}
+        >
           <Thead>
             <Tr>
-              {["Id", "Problem Name", "Tags", "Rating", "Solved Count"].map(
+              {["Id", "Problem Name", "Rating", "Solved Count"].map(
                 (title, index) => (
                   <Th
                     key={index}

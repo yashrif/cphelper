@@ -10,8 +10,8 @@ export const ProblemFilter = () => {
 
   return (
     <Box
-      boxShadow={"0 1.2rem 2.4rem rgba(28, 126, 214, .15)"}
-      backgroundColor={"bg2"}
+      boxShadow={"0.8rem 1.2rem 2.4rem rgba(28, 126, 214, .1)"}
+      backgroundColor={"bg"}
       px={"16"}
       py={"12"}
       borderRadius={"lg"}

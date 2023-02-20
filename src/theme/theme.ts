@@ -34,6 +34,10 @@ export const theme = extendTheme({
       900: "#2e1907",
     },
 
+    problemTable: {
+      100: "#d2e9ff",
+    },
+
     bg: "#fff",
     bg2: "#fafafc",
     bg3: "#f2f5fe",
