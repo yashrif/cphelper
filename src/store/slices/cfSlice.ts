@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
 import _ from "lodash";
 
 import { RootState } from "../store";
@@ -126,15 +127,34 @@ export const fetchUserRatingHistory = createAsyncThunk(
 export const fetchUserStatus = createAsyncThunk(
   "cf/fetchUserStatus",
   async (handle: string) => {
-    const response = (
-      await apiCf.get("https://codeforces.com/api/user.status", {
-        params: {
-          handle: handle,
-          from: 1,
-          count: 5,
-        },
-      })
-    ).data.result as Submission[];
+    let response: Submission[] = [];
+
+    try {
+      response = (
+        await apiCf.get("https://codeforces.com/api/user.status", {
+          params: {
+            handle: handle,
+            from: 1,
+            count: 5,
+          },
+        })
+      ).data.result as Submission[];
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status !== 404)
+          response = (
+            await apiCf.get("https://codeforces.com/api/user.status", {
+              params: {
+                handle: handle,
+                from: 1,
+                count: 5,
+              },
+            })
+          ).data.result as Submission[];
+      } else {
+        console.error(error);
+      }
+    }
 
     return response.map((e) =>
       _.pick(e, [

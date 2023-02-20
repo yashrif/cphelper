@@ -1,14 +1,20 @@
 import React, { useEffect } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import kute from "kute.js";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 import { useAppSelector } from "../../hooks/hooks";
+import { Loading } from "../../common/types";
 
 /* ---------------- TODO: Randomize svg's colors using state ---------------- */
 
 export const WaveAnimation = () => {
   const profileColorPalette = useAppSelector(
     (state) => state.component.profileColorPalette
+  );
+  const isProfileColorPaletteLoaded = useAppSelector(
+    (state) => state.component.loading.profileColorPalette
   );
 
   useEffect(() => {
@@ -62,6 +68,7 @@ export const WaveAnimation = () => {
         top={"50%"}
         transform={"translate(-50%, -50%)"}
         zIndex={10}
+        opacity={isProfileColorPaletteLoaded === Loading.SUCCEEDED ? 1 : 0}
       >
         Some Text - contest info / quotes
       </Text>
@@ -69,7 +76,12 @@ export const WaveAnimation = () => {
       {/* TODO: Change waves color */}
 
       <svg
-        style={{ transform: "scale(1.5)" }}
+        style={{
+          transform: "scale(1.5)",
+          opacity: `${
+            isProfileColorPaletteLoaded === Loading.SUCCEEDED ? 1 : 0
+          }`,
+        }}
         data-name="Layer 1"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 1200 120"
@@ -110,6 +122,19 @@ export const WaveAnimation = () => {
           visibility="hidden"
         ></path>
       </svg>
+
+      {isProfileColorPaletteLoaded !== Loading.SUCCEEDED && (
+        <Box
+          position={"absolute"}
+          height={"3xs"}
+          width={"full"}
+          top={"50%"}
+          left={"50%"}
+          transform={"translate(-50%, -50%)"}
+        >
+          <Skeleton height={"100%"} width={"100%"} baseColor={"#fcede0"} />
+        </Box>
+      )}
     </Box>
   );
 };

@@ -50,6 +50,8 @@ export const theme = extendTheme({
       muted3: "#aaa",
       primary: "#393f93",
     },
+
+    // Skeleton bg: #dbedff
   },
 
   // fonts: {

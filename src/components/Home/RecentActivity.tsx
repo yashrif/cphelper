@@ -1,16 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Flex, Text, Stack } from "@chakra-ui/react";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { IoTimerOutline, IoCloseCircleOutline } from "react-icons/io5";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-import { useAppSelector } from "../../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { Loading, Submission, Verdict } from "../../common/types";
+import { fetchUserStatus } from "../../store/slices/cfSlice";
 
 export const RecentActivity = () => {
+  const useDispatch = useAppDispatch();
+
+  const handle = useAppSelector((state) => state.preferences.handle);
   const userStatus = useAppSelector((state) => state.cf.userStatus);
-  const isUserStatusLoading = useAppSelector(
+  const isUserStatusLoaded = useAppSelector(
     (state) => state.cf.loading.userStatus
   );
+
+  useEffect(() => {
+    useDispatch(fetchUserStatus(handle));
+  }, []);
 
   const secondsToDate = (sec: number) => {
     const t = new Date(1970, 0, 1);
@@ -24,6 +34,23 @@ export const RecentActivity = () => {
     ) : (
       <IoCloseCircleOutline color="#f03e3e" size={"2.4rem"} />
     );
+  };
+
+  const renderSkeleton = (count: number) => {
+    const renderList: JSX.Element[] = [];
+
+    for (let i = 0; i < count; i++)
+      renderList.push(
+        <Skeleton
+          key={i + 1}
+          baseColor={"#dbedff"}
+          height={"5.2rem"}
+          width={"100%"}
+          borderRadius={".5rem"}
+        />
+      );
+
+    return renderList;
   };
 
   const renderActivityList = (activities: Submission[]) => {
@@ -60,14 +87,16 @@ export const RecentActivity = () => {
         <Text color="font.focused" fontSize={"2xl"} fontWeight={"semibold"}>
           Recent Activity
         </Text>
-        <Text color={"brand.500"} fontSize={"md"}>
+        <Text color={"primary.500"} fontSize={"md"}>
           View More
         </Text>
       </Flex>
 
-      {isUserStatusLoading === Loading.SUCCEEDED && (
-        <Stack gap={"0.4rem"}>{renderActivityList(userStatus)}</Stack>
-      )}
+      <Stack gap={"0.4rem"}>
+        {isUserStatusLoaded === Loading.SUCCEEDED
+          ? renderActivityList(userStatus)
+          : renderSkeleton(5)}
+      </Stack>
     </Box>
   );
 };

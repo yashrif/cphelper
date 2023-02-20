@@ -13,7 +13,7 @@ export const ProblemSet = () => {
       gridTemplateColumns={"1fr auto"}
       // columnGap={"24"}
     >
-      <Box px={"16"} py={"36"}>
+      <Box px={"16"} py={"36"} overflow={"hidden"}>
         <ProblemTable />
       </Box>
 

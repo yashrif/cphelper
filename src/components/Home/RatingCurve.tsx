@@ -7,21 +7,33 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+// import Skeleton from "react-loading-skeleton";
+// import "react-loading-skeleton/dist/skeleton.css";
 
-import { useAppSelector } from "../../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { Loading } from "../../common/types";
+import { fetchUserRatingHistory } from "../../store/slices/cfSlice";
 
 export const RatingCurve = () => {
   const GRAPH_ANIMATION_DELAY = 500;
-  const GRAPH_ANIMATION_DURATION = 2500;
+  const GRAPH_ANIMATION_DURATION = 2000;
+
+  const [isShowGraph, setIsShowGraph] = useState(false);
+  // const [isShowDots, setIsShowDots] = useState(false);
+
+  const useDispatch = useAppDispatch();
+
+  const handle = useAppSelector((state) => state.preferences.handle);
   const userRatingHistory = useAppSelector(
     (state) => state.cf.userRatingHistory
   );
   const isUserRatingHistory = useAppSelector(
-    (state) => state.cf.loading.userRatingHistoryAndStatus
+    (state) => state.cf.loading.userRatingHistory
   );
-  const [isShowGraph, setIsShowGraph] = useState(false);
-  // const [isShowDots, setIsShowDots] = useState(false);
+
+  useEffect(() => {
+    useDispatch(fetchUserRatingHistory(handle));
+  }, []);
 
   useEffect(() => {
     const graphTimer = setTimeout(() => {
@@ -90,6 +102,7 @@ export const RatingCurve = () => {
             size="xl"
           />
         </Box>
+        // <Skeleton count={1} height={"100%"} width={"100%"} />
       )}
     </Box>
   );
