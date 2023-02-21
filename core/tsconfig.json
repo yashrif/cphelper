@@ -6,14 +6,13 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,
-    "outDir": "../dist",
+    "outDir": "../build",
     "removeComments": false,
     "sourceMap": true,
     "target": "es5",
     "paths": {
       "*": ["node_modules/*"]
     }
-    // "suppressImplicitAnyIndexErrors": true,
   },
   "include": ["**/*"]
 }

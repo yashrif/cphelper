@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Tag {
+  tag              String   @id
+  Problem          Problem? @relation(fields: [problemContestId, problemIndex], references: [contestId, index])
+  problemContestId Int?
+  problemIndex     String?
+}
+
+model Problem {
+  contestId   Int
+  index       String
+  name        String
+  rating      Int
+  solvedCount Int
+  tags        Tag[]
+  type        String
+
+  @@unique([contestId, index])
+}

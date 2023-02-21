@@ -17,7 +17,7 @@ export const ProblemSet = () => {
         <ProblemTable />
       </Box>
 
-      <Box minW={"md"} maxW={"lg"} px={"16"} py={"36"}>
+      <Box w={"md"} px={"16"} py={"36"}>
         <ProblemFilter />
       </Box>
     </Grid>

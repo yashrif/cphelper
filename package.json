@@ -10,18 +10,17 @@
     "build:web": "tsc && vite build",
     "preview": "vite preview",
     "build:desktop": "tsc -p core/tsconfig.json",
-    "start:desktop": "npm run build:desktop && electron dist/main.js",
-    "migrate": "cd core && npx prisma migrate dev --name init",
+    "start:desktop": "npm run build:desktop && electron build/main.js",
+    "migrate": "cd prisma && npx prisma migrate dev --name init",
     "studio": "cd core && npx prisma studio",
     "build": "electron-builder --x64",
-    "publish": "electron-builder --x64 --win -p always",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "publish": "electron-builder --x64 --win -p always"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.4.9",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@prisma/client": "^4.10.1",
     "@reduxjs/toolkit": "^1.9.2",
     "axios": "^1.3.2",
     "chakra-multiselect": "^0.3.11",

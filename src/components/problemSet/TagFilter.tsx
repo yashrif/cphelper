@@ -9,13 +9,10 @@ import { fetchProblemTags } from "../../store/slices/cfSlice";
 import { Loading } from "../../common/types";
 
 export const TagFilter = ({ setIsLoadingFinished }: any) => {
+  const [customizedTags, setCustomizedTags] = useState(Object);
   const [selectedTags, setSelectedTags] = useState({});
-  const tags = useAppSelector((state) =>
-    state.cf.problemTags?.map((tag) => ({
-      label: _.capitalize(tag),
-      value: tag,
-    }))
-  );
+
+  const tags = useAppSelector((state) => state.cf.problemTags);
   const isTagLoaded = useAppSelector((state) => state.cf.loading.problemTags);
   const useDispatch = useAppDispatch();
 
@@ -24,11 +21,22 @@ export const TagFilter = ({ setIsLoadingFinished }: any) => {
   }, []);
 
   useEffect(() => {
+    setCustomizedTags(
+      tags?.map((tag) => ({
+        label: _.capitalize(tag),
+        value: tag,
+      }))
+    );
+  }, [tags]);
+
+  useEffect(() => {
     setIsLoadingFinished((prevState: boolean[]) => {
       const newState = [...prevState];
       newState[1] = isTagLoaded === Loading.SUCCEEDED;
       return newState;
     });
+
+    if (isTagLoaded === Loading.SUCCEEDED) cph.storeTags(tags);
   }, [isTagLoaded]);
 
   useEffect(() => {
@@ -50,7 +58,7 @@ export const TagFilter = ({ setIsLoadingFinished }: any) => {
         isMulti
         name={"tags"}
         colorScheme={"primary"}
-        options={tags}
+        options={customizedTags}
         placeholder={"Select tags"}
         closeMenuOnSelect={false}
         onChange={setSelectedTags}

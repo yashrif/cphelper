@@ -17,8 +17,8 @@
     "jsx": "react-jsx",
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
-    "outDir": "dist"
+    "outDir": "build"
   },
-  "include": ["src"],
+  "include": ["src", "core/**/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
