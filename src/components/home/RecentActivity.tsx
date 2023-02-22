@@ -7,7 +7,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { Loading, Submission, Verdict } from "../../common/types";
-import { fetchUserStatus } from "../../store/slices/cfSlice";
+import { fetchUserStatus } from "../../store/actions/cfApiActions";
 
 export const RecentActivity = () => {
   const useDispatch = useAppDispatch();

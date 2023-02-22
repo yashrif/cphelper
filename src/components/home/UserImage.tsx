@@ -4,7 +4,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { fetchUser } from "../../store/slices/cfSlice";
+import { fetchUser } from "../../store/actions/cfApiActions";
 import { BlobAnimation } from "./BlobAnimation";
 import { generateColorPalette } from "../../store/slices/componentSlice";
 import { Loading } from "../../common/types";

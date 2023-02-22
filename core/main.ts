@@ -1,9 +1,10 @@
-import { app, BrowserWindow, ipcMain, session } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import * as path from "path";
 import { prisma } from "./lib/prismaClient";
 import * as _ from "lodash";
+import installExtension, { REDUX_DEVTOOLS } from "electron-devtools-installer";
 
-// const cookies = session.fromPartition("persist:foobar");
+import { ProblemRating } from "../src/common/types";
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -21,7 +22,7 @@ const createMainWindow = () => {
     },
   });
 
-  if (isDev) mainWindow.webContents.openDevTools();
+  // if (isDev) mainWindow.webContents.openDevTools();
 
   isDev
     ? mainWindow.loadURL("http://localhost:5173/#/problemset")
@@ -31,81 +32,62 @@ const createMainWindow = () => {
 app.whenReady().then(() => {
   createMainWindow();
 
-  const ses = mainWindow.webContents.session;
-  console.log(ses.getUserAgent());
+  /* -----------------------------Adding redux dev tool ----------------------------- */
+
+  if (isDev)
+    mainWindow.webContents.once("dom-ready", async () => {
+      await installExtension([REDUX_DEVTOOLS])
+        .then((name) => console.log(`Added Extension:  ${name}`))
+        .catch((err) => console.log("An error occurred: ", err))
+        .finally(() => {
+          mainWindow.webContents.openDevTools();
+        });
+    });
 });
 
-// cookies.on("change", (e) => {
-//   console.log(e);
-// });
+/* -------------------------------------------------------------------------- */
+/*                                  Handlers                                  */
+/* -------------------------------------------------------------------------- */
 
-const useDb = async () => {
-  // await prisma.problem.deleteMany();
-  // await prisma.tag.deleteMany();
-  // await prisma.tag.create({
-  //   data: [
-  //     {
-  //       tag: "bfs",
-  //     },
-  //   ],
-  // });
-  // await prisma.problem.create({
-  //   data: {
-  //     contestId: 453,
-  //     index: "B",
-  //     name: "A test turkey",
-  //     rating: 800,
-  //     tags: {
-  //       connect: [{ tag: "bst" }, { tag: "dp" }, { tag: "bfs" }],
-  //     },
-  //     solvedCount: 0,
-  //     type: "Programming",
-  //   },
-  // });
-  // console.log(
-  //   await prisma.problem.findMany({
-  //     where: {
-  //       tags: {
-  //         some: {
-  //           tag: {
-  //             contains: "bfs",
-  //           },
-  //         },
-  //       },
-  //     },
-  //   })
-  // );
-  // console.log(
-  //   await prisma.problem.findMany({
-  //     select: {
-  //       contestId: true,
-  //       index: true,
-  //       tags: {
-  //         select: {
-  //           problemContestId: true,
-  //           tag: true,
-  //         },
-  //       },
-  //     },
-  //   })
-  // );
-};
+/* ---------------------------------- Store --------------------------------- */
 
-useDb()
-  .catch((e) => console.error(e.message))
-  .finally(async () => await prisma.$disconnect());
-
-ipcMain.handle("STORE_TAGS", (_, tags: string[]) => {
-  tags.map(async (tag) => {
-    await prisma.tag.create({
-      data: {
+ipcMain.handle("STORE_PROBLEM_TAGS", async (_, tags: string[]) => {
+  tags?.map(async (tag) => {
+    await prisma.tag.upsert({
+      where: {
         tag: tag,
       },
+      create: {
+        tag: tag,
+      },
+      update: {},
     });
   });
 });
 
-ipcMain.handle("LOAD_TAGS", async () =>
+ipcMain.handle(
+  "STORE_PROBLEM_RATING",
+  async (_, problemRating: ProblemRating) => {
+    await prisma.problemRating.upsert({
+      where: {
+        id: 1,
+      },
+      create: {
+        id: 1,
+        max: problemRating.max,
+        min: problemRating.min,
+      },
+      update: {
+        max: problemRating.max,
+        min: problemRating.min,
+      },
+    });
+  }
+);
+
+/* ---------------------------------- Load ---------------------------------- */
+
+ipcMain.handle("LOAD_PROBLEM_TAGS", async () =>
   _.map(
     await prisma.tag.findMany({
       select: {
@@ -114,4 +96,15 @@ ipcMain.handle("LOAD_TAGS", async () =>
     }),
     "tag"
   )
+);
+
+ipcMain.handle(
+  "LOAD_PROBLEM_RATING",
+  async () =>
+    await prisma.problemRating.findUnique({
+      select: { id: false, max: true, min: true },
+      where: {
+        id: 1,
+      },
+    })
 );

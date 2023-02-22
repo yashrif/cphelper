@@ -12,7 +12,7 @@ import {
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { Loading } from "../../common/types";
-import { fetchUserRatingHistory } from "../../store/slices/cfSlice";
+import { fetchUserRatingHistory } from "../../store/actions/cfApiActions";
 
 export const RatingCurve = () => {
   const GRAPH_ANIMATION_DELAY = 500;

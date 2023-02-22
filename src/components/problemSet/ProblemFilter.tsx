@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, Spinner, Text } from "@chakra-ui/react";
 
 import { RatingSlider } from "./RatingSlider";
 import { TagFilter } from "./TagFilter";
 import { AdditionalOptions } from "./AdditionalOptions";
+import { useAppSelector } from "../../hooks/hooks";
+import { Loading } from "../../common/types";
 
 export const ProblemFilter = () => {
-  const [isLoadingFinished, setIsLoadingFinished] = useState([false, false]);
+  const isLoaded = useAppSelector(
+    (state) =>
+      state.cf.loading.problemTags.load === Loading.SUCCEEDED &&
+      state.cf.loading.problemRating.load === Loading.SUCCEEDED
+  );
 
   return (
     <Box
@@ -26,7 +32,7 @@ export const ProblemFilter = () => {
         Filter Problems
       </Text>
 
-      {!isLoadingFinished[0] && !isLoadingFinished[1] ? (
+      {!isLoaded ? (
         <Box
           position={"absolute"}
           top={"50%"}
@@ -43,16 +49,13 @@ export const ProblemFilter = () => {
         </Box>
       ) : null}
 
-      <Box
-        alignItems={"stretch"}
-        opacity={isLoadingFinished[0] && isLoadingFinished[1] ? 1 : 0}
-      >
+      <Box alignItems={"stretch"} opacity={isLoaded ? 1 : 0}>
         <Box mb={"24"}>
-          <RatingSlider setIsLoadingFinished={setIsLoadingFinished} />
+          <RatingSlider />
         </Box>
 
         <Box mb={"32"}>
-          <TagFilter setIsLoadingFinished={setIsLoadingFinished} />
+          <TagFilter />
         </Box>
 
         <AdditionalOptions />

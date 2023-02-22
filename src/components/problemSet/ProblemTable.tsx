@@ -17,7 +17,7 @@ import _, { size } from "lodash";
 
 import { Loading, Problem } from "../../common/types";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { fetchProblemSet } from "../../store/slices/cfSlice";
+import { fetchProblemSet } from "../../store/actions/cfApiActions";
 
 export const ProblemTable = () => {
   const navigate = useNavigate();

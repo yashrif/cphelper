@@ -14,30 +14,19 @@ import {
 } from "@chakra-ui/react";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { fetchProblemRating } from "../../store/slices/cfSlice";
 import { setProblemRatingRange } from "../../store/slices/componentSlice";
-import { Loading } from "../../common/types";
+import { loadProblemRating } from "../../store/actions/cfDbActions";
 
-export const RatingSlider = ({ setIsLoadingFinished }: any) => {
+export const RatingSlider = () => {
   const [ratingRange, setRatingRange] = useState([800, 3500]);
 
   const useDispatch = useAppDispatch();
+
   const problemRating = useAppSelector((state) => state.cf.problemRating);
-  const isProblemRatingLoaded = useAppSelector(
-    (state) => state.cf.loading.problemRating
-  );
 
   useEffect(() => {
-    useDispatch(fetchProblemRating());
+    useDispatch(loadProblemRating());
   }, []);
-
-  useEffect(() => {
-    setIsLoadingFinished((prevState: boolean[]) => {
-      const newState = [...prevState];
-      newState[0] = isProblemRatingLoaded.load === Loading.SUCCEEDED;
-      return newState;
-    });
-  }, [isProblemRatingLoaded]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

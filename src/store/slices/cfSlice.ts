@@ -1,8 +1,5 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
-import _ from "lodash";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { RootState } from "../store";
 import {
   Loading,
   Problem,
@@ -10,8 +7,7 @@ import {
   Submission,
   User,
 } from "../../common/types";
-import apiCf from "../../apis/apiCf";
-import * as cfDb from "../actions/cfDbActions";
+import * as cf from "../actions/cfActions";
 
 /* ------------------------------- Interfaces ------------------------------- */
 
@@ -21,12 +17,14 @@ interface ProblemsFetchState {
       fetch: Loading;
       load: Loading;
       store: Loading;
+      fetchAndStore: Loading;
     };
     problemSet: Loading;
     problemTags: {
       fetch: Loading;
       load: Loading;
       store: Loading;
+      fetchAndStore: Loading;
     };
     user: Loading;
     userRatingHistory: Loading;
@@ -49,12 +47,14 @@ const initialState = {
       fetch: Loading.IDLE,
       load: Loading.IDLE,
       store: Loading.IDLE,
+      fetchAndStore: Loading.IDLE,
     },
     problemSet: Loading.IDLE,
     problemTags: {
       fetch: Loading.IDLE,
       load: Loading.IDLE,
       store: Loading.IDLE,
+      fetchAndStore: Loading.IDLE,
     },
     user: Loading.IDLE,
     userRatingHistory: Loading.IDLE,
@@ -62,149 +62,6 @@ const initialState = {
     userRatingHistoryAndStatus: Loading.IDLE,
   },
 } as ProblemsFetchState;
-
-/* -------------------------------------------------------------------------- */
-/*                            Async Action Creators                           */
-/* -------------------------------------------------------------------------- */
-
-export const fetchProblemSet = createAsyncThunk(
-  "cf/fetchProblemSet",
-  async (tags: string[] = []) => {
-    const params = new URLSearchParams();
-    tags.map((tag: string) => params.append("tags", tag));
-
-    const response = (
-      await apiCf.get("problemset.problems", {
-        params: params,
-      })
-    ).data.result;
-
-    return response.problems.map((problem: Problem, index: number) => {
-      problem.solvedCount = response.problemStatistics[index].solvedCount;
-      return problem;
-    });
-  }
-);
-
-/* --- TODO: check if problem list updates with the nested action creators -- */
-/* ------------------- if changes then make that isolated ------------------- */
-
-export const fetchProblemTags = createAsyncThunk(
-  "cf/fetchProblemTags",
-  async (__, { dispatch, getState }) => {
-    await dispatch(fetchProblemSet([]));
-
-    const state = getState() as RootState;
-
-    return _.chain(state.cf.problemSet)
-      .map("tags")
-      .flatten()
-      .uniq()
-      .sort()
-      .value();
-  }
-);
-
-export const fetchProblemRating = createAsyncThunk(
-  "cf/fetchProblemRating",
-  async (__, { dispatch, getState }) => {
-    await dispatch(fetchProblemSet([]));
-
-    const state = getState() as RootState;
-
-    const ratings = _.chain(state.cf.problemSet).map("rating").uniq().value();
-
-    return {
-      max: _.max(ratings) as number,
-      min: _.min(ratings) as number,
-    };
-  }
-);
-
-export const fetchUser = createAsyncThunk(
-  "cf/fetchUser",
-  async (handle: string) =>
-    (
-      await apiCf.get("user.info", {
-        params: {
-          handles: handle,
-        },
-      })
-    ).data.result[0]
-);
-
-export const fetchUserRatingHistory = createAsyncThunk(
-  "cf/fetchUserRatingHistory",
-  async (handle: string) =>
-    (
-      await apiCf.get("https://codeforces.com/api/user.rating", {
-        params: {
-          handle: handle,
-        },
-      })
-    ).data.result
-);
-
-export const fetchUserStatus = createAsyncThunk(
-  "cf/fetchUserStatus",
-  async (handle: string) => {
-    let response: Submission[] = [];
-
-    try {
-      response = (
-        await apiCf.get("https://codeforces.com/api/user.status", {
-          params: {
-            handle: handle,
-            from: 1,
-            count: 5,
-          },
-        })
-      ).data.result as Submission[];
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status !== 404)
-          response = (
-            await apiCf.get("https://codeforces.com/api/user.status", {
-              params: {
-                handle: handle,
-                from: 1,
-                count: 5,
-              },
-            })
-          ).data.result as Submission[];
-      } else {
-        console.error(error);
-      }
-    }
-
-    return response.map((e) =>
-      _.pick(e, [
-        "id",
-        "problem",
-        "verdict",
-        "creationTimeSeconds",
-        "programmingLanguage",
-      ])
-    );
-  }
-);
-
-export const fetchUserRatingHistoryAndStatus = createAsyncThunk(
-  "cf/fetchUserRatingAndStatus",
-  async (handle: string, { dispatch, getState }) => {
-    await dispatch(fetchUser(handle));
-    await dispatch(fetchUserRatingHistory(handle));
-    await dispatch(fetchUserStatus(handle));
-
-    const state = getState() as RootState;
-    if (state.cf.loading.user === Loading.FAILED)
-      await dispatch(fetchUser(handle));
-    if (state.cf.loading.userRatingHistory === Loading.FAILED)
-      await dispatch(fetchUserRatingHistory(handle));
-    if (state.cf.loading.userStatus === Loading.FAILED)
-      await dispatch(fetchUserStatus(handle));
-  }
-);
 
 /* -------------------------------------------------------------------------- */
 /*                                   Slices                                   */
@@ -217,118 +74,118 @@ const problemSlice = createSlice({
   extraReducers: (builder) => {
     /* ------------------------------ Problem List ------------------------------ */
 
-    builder.addCase(fetchProblemSet.pending, (state) => {
+    builder.addCase(cf.fetchProblemSet.pending, (state) => {
       state.loading.problemSet = Loading.PENDING;
     });
 
     builder.addCase(
-      fetchProblemSet.fulfilled,
+      cf.fetchProblemSet.fulfilled,
       (state, action: PayloadAction<Problem[]>) => {
         state.loading.problemSet = Loading.SUCCEEDED;
         state.problemSet = action.payload;
       }
     );
 
-    builder.addCase(fetchProblemSet.rejected, (state) => {
+    builder.addCase(cf.fetchProblemSet.rejected, (state) => {
       state.loading.problemSet = Loading.FAILED;
       // state.problemSet = [];
     });
 
     /* ------------------------------ Problem Tags ------------------------------ */
 
-    builder.addCase(fetchProblemTags.pending, (state) => {
+    builder.addCase(cf.fetchProblemTags.pending, (state) => {
       state.loading.problemTags.fetch = Loading.PENDING;
     });
 
     builder.addCase(
-      fetchProblemTags.fulfilled,
+      cf.fetchProblemTags.fulfilled,
       (state, action: PayloadAction<string[]>) => {
         state.loading.problemTags.fetch = Loading.SUCCEEDED;
         state.problemTags = action.payload;
       }
     );
 
-    builder.addCase(fetchProblemTags.rejected, (state) => {
+    builder.addCase(cf.fetchProblemTags.rejected, (state) => {
       state.loading.problemTags.fetch = Loading.FAILED;
     });
 
     /* ----------------------------- Problem Rating ----------------------------- */
 
-    builder.addCase(fetchProblemRating.pending, (state) => {
+    builder.addCase(cf.fetchProblemRating.pending, (state) => {
       state.loading.problemRating.fetch = Loading.PENDING;
     });
 
-    builder.addCase(fetchProblemRating.fulfilled, (state, action) => {
+    builder.addCase(cf.fetchProblemRating.fulfilled, (state, action) => {
       state.loading.problemRating.fetch = Loading.SUCCEEDED;
       state.problemRating = action.payload;
     });
 
-    builder.addCase(fetchProblemRating.rejected, (state) => {
+    builder.addCase(cf.fetchProblemRating.rejected, (state) => {
       state.loading.problemRating.fetch = Loading.FAILED;
     });
 
     /* ---------------------------------- User ---------------------------------- */
 
-    builder.addCase(fetchUser.pending, (state) => {
+    builder.addCase(cf.fetchUser.pending, (state) => {
       state.loading.user = Loading.PENDING;
     });
 
     builder.addCase(
-      fetchUser.fulfilled,
+      cf.fetchUser.fulfilled,
       (state, action: PayloadAction<User>) => {
         state.loading.user = Loading.SUCCEEDED;
         state.user = action.payload;
       }
     );
 
-    builder.addCase(fetchUser.rejected, (state) => {
+    builder.addCase(cf.fetchUser.rejected, (state) => {
       state.loading.user = Loading.FAILED;
     });
 
     /* --------------------------- User Rating History -------------------------- */
 
-    builder.addCase(fetchUserRatingHistory.pending, (state) => {
+    builder.addCase(cf.fetchUserRatingHistory.pending, (state) => {
       state.loading.userRatingHistory = Loading.PENDING;
     });
 
     builder.addCase(
-      fetchUserRatingHistory.fulfilled,
+      cf.fetchUserRatingHistory.fulfilled,
       (state, action: PayloadAction<number[]>) => {
         state.loading.userRatingHistory = Loading.SUCCEEDED;
         state.userRatingHistory = action.payload;
       }
     );
 
-    builder.addCase(fetchUserRatingHistory.rejected, (state) => {
+    builder.addCase(cf.fetchUserRatingHistory.rejected, (state) => {
       state.loading.userRatingHistory = Loading.FAILED;
       // state.userRatingHistory = [];
     });
 
     /* ------------------------------- User Status ------------------------------ */
 
-    builder.addCase(fetchUserStatus.pending, (state) => {
+    builder.addCase(cf.fetchUserStatus.pending, (state) => {
       state.loading.userStatus = Loading.PENDING;
     });
 
     builder.addCase(
-      fetchUserStatus.fulfilled,
+      cf.fetchUserStatus.fulfilled,
       (state, action: PayloadAction<Submission[]>) => {
         state.loading.userStatus = Loading.SUCCEEDED;
         state.userStatus = action.payload;
       }
     );
 
-    builder.addCase(fetchUserStatus.rejected, (state) => {
+    builder.addCase(cf.fetchUserStatus.rejected, (state) => {
       state.loading.userStatus = Loading.FAILED;
     });
 
     /* --------------------- fetchUserRatingHistoryAndStatus -------------------- */
 
-    builder.addCase(fetchUserRatingHistoryAndStatus.pending, (state) => {
+    builder.addCase(cf.fetchUserRatingHistoryAndStatus.pending, (state) => {
       state.loading.userRatingHistoryAndStatus = Loading.PENDING;
     });
 
-    builder.addCase(fetchUserRatingHistoryAndStatus.fulfilled, (state) => {
+    builder.addCase(cf.fetchUserRatingHistoryAndStatus.fulfilled, (state) => {
       if (
         state.loading.user === Loading.SUCCEEDED &&
         state.loading.userRatingHistory === Loading.SUCCEEDED &&
@@ -338,7 +195,7 @@ const problemSlice = createSlice({
       else state.loading.userRatingHistoryAndStatus = Loading.FAILED;
     });
 
-    builder.addCase(fetchUserRatingHistoryAndStatus.rejected, (state) => {
+    builder.addCase(cf.fetchUserRatingHistoryAndStatus.rejected, (state) => {
       state.loading.userRatingHistoryAndStatus = Loading.FAILED;
     });
 
@@ -346,24 +203,118 @@ const problemSlice = createSlice({
     /*                                     DB                                     */
     /* -------------------------------------------------------------------------- */
 
-    /* ---------------------------------- Load ---------------------------------- */
+    /* -------------------------------------------------------------------------- */
+    /*                                    Store                                   */
+    /* -------------------------------------------------------------------------- */
 
     /* ------------------------------ Problem tags ------------------------------ */
 
-    builder.addCase(cfDb.loadProblemTags.pending, (state) => {
+    builder.addCase(cf.storeProblemTags.pending, (state) => {
+      state.loading.problemTags.store = Loading.PENDING;
+    });
+
+    builder.addCase(cf.storeProblemTags.fulfilled, (state) => {
+      state.loading.problemTags.store = Loading.SUCCEEDED;
+    });
+
+    builder.addCase(cf.storeProblemTags.rejected, (state) => {
+      state.loading.problemTags.store = Loading.FAILED;
+    });
+
+    /* ----------------------------- Problem rating ----------------------------- */
+
+    builder.addCase(cf.storeProblemRating.pending, (state) => {
+      state.loading.problemRating.store = Loading.PENDING;
+    });
+
+    builder.addCase(cf.storeProblemRating.fulfilled, (state) => {
+      state.loading.problemRating.store = Loading.SUCCEEDED;
+    });
+
+    builder.addCase(cf.storeProblemRating.rejected, (state) => {
+      state.loading.problemRating.store = Loading.FAILED;
+    });
+
+    /* -------------------------------------------------------------------------- */
+    /*                                    Load                                    */
+    /* -------------------------------------------------------------------------- */
+
+    /* ------------------------------ Problem tags ------------------------------ */
+
+    builder.addCase(cf.loadProblemTags.pending, (state) => {
       state.loading.problemTags.load = Loading.PENDING;
     });
 
     builder.addCase(
-      cfDb.loadProblemTags.fulfilled,
+      cf.loadProblemTags.fulfilled,
       (state, action: PayloadAction<string[]>) => {
         state.loading.problemTags.load = Loading.SUCCEEDED;
         state.problemTags = action.payload;
       }
     );
 
-    builder.addCase(cfDb.loadProblemTags.rejected, (state) => {
+    builder.addCase(cf.loadProblemTags.rejected, (state) => {
       state.loading.problemTags.load = Loading.FAILED;
+    });
+
+    /* ----------------------------- Problem rating ----------------------------- */
+
+    builder.addCase(cf.loadProblemRating.pending, (state) => {
+      state.loading.problemRating.load = Loading.PENDING;
+    });
+
+    builder.addCase(
+      cf.loadProblemRating.fulfilled,
+      (state, action: PayloadAction<ProblemRating>) => {
+        state.loading.problemRating.load = Loading.SUCCEEDED;
+        state.problemRating = action.payload;
+      }
+    );
+
+    builder.addCase(cf.loadProblemRating.rejected, (state) => {
+      state.loading.problemRating.load = Loading.FAILED;
+    });
+
+    /* -------------------------------------------------------------------------- */
+    /*                                  Combined                                  */
+    /* -------------------------------------------------------------------------- */
+
+    /* ----------------------- Update Problem tags & store ---------------------- */
+
+    builder.addCase(cf.updateProblemTagsAndStore.pending, (state) => {
+      state.loading.problemTags.fetchAndStore = Loading.PENDING;
+    });
+
+    builder.addCase(cf.updateProblemTagsAndStore.fulfilled, (state) => {
+      if (
+        state.loading.problemTags.fetch === Loading.SUCCEEDED &&
+        state.loading.problemTags.store
+      )
+        state.loading.problemTags.fetchAndStore = Loading.SUCCEEDED;
+      else state.loading.problemTags.fetchAndStore = Loading.FAILED;
+    });
+
+    builder.addCase(cf.updateProblemTagsAndStore.rejected, (state) => {
+      state.loading.problemTags.fetchAndStore = Loading.FAILED;
+    });
+
+    /* ------------------------- Problem rating & store ------------------------- */
+
+    builder.addCase(cf.updateProblemRatingAndStore.pending, (state) => {
+      state.loading.problemRating.fetchAndStore = Loading.PENDING;
+    });
+
+    builder.addCase(cf.updateProblemRatingAndStore.fulfilled, (state) => {
+      if (
+        state.loading.problemRating.fetch === Loading.SUCCEEDED &&
+        state.loading.problemRating.store
+      )
+        state.loading.problemRating.fetchAndStore = Loading.SUCCEEDED;
+      else state.loading.problemRating.fetchAndStore = Loading.FAILED;
+    });
+
+    builder.addCase(cf.updateProblemRatingAndStore.rejected, (state) => {
+      state.loading.problemRating.fetchAndStore = Loading.FAILED;
     });
   },
 });

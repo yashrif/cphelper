@@ -28,3 +28,14 @@ model Problem {
 
   @@unique([contestId, index])
 }
+
+model ProblemRating {
+  id  Int @id
+  max Int
+  min Int
+}
+
+model Preferences {
+  id     Int    @id
+  handel String
+}
