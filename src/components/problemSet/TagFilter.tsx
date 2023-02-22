@@ -7,18 +7,26 @@ import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { updateSelectedProblemTags } from "../../store/slices/componentSlice";
 import { fetchProblemTags } from "../../store/slices/cfSlice";
 import { Loading } from "../../common/types";
+import { loadProblemTags } from "../../store/actions/cfDbActions";
 
 export const TagFilter = ({ setIsLoadingFinished }: any) => {
   const [customizedTags, setCustomizedTags] = useState(Object);
   const [selectedTags, setSelectedTags] = useState({});
 
   const tags = useAppSelector((state) => state.cf.problemTags);
-  const isTagLoaded = useAppSelector((state) => state.cf.loading.problemTags);
+  const isTagLoaded = useAppSelector(
+    (state) => state.cf.loading.problemTags.load
+  );
   const useDispatch = useAppDispatch();
 
   useEffect(() => {
-    useDispatch(fetchProblemTags());
+    // useDispatch(fetchProblemTags());
+
+    useDispatch(loadProblemTags());
+    // cf.loadProblemTags().then(r=>console.log(r))
   }, []);
+
+  console.log(tags);
 
   useEffect(() => {
     setCustomizedTags(
@@ -36,7 +44,7 @@ export const TagFilter = ({ setIsLoadingFinished }: any) => {
       return newState;
     });
 
-    if (isTagLoaded === Loading.SUCCEEDED) cph.storeTags(tags);
+    // isTagLoaded === Loading.SUCCEEDED && cf.storeProblemTags(tags)
   }, [isTagLoaded]);
 
   useEffect(() => {

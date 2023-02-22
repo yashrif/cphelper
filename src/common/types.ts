@@ -15,6 +15,11 @@ export interface Problem {
   type: string;
 }
 
+export interface ProblemRating {
+  max: number;
+  min: number;
+}
+
 export interface Submission {
   creationTimeSeconds: number;
   id: number;

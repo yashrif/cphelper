@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, session } from "electron";
 import * as path from "path";
 import { prisma } from "./lib/prismaClient";
+import * as _ from "lodash";
 
 // const cookies = session.fromPartition("persist:foobar");
 
@@ -40,7 +41,7 @@ app.whenReady().then(() => {
 
 const useDb = async () => {
   // await prisma.problem.deleteMany();
-  await prisma.tag.deleteMany();
+  // await prisma.tag.deleteMany();
   // await prisma.tag.create({
   //   data: [
   //     {
@@ -103,3 +104,14 @@ ipcMain.handle("STORE_TAGS", (_, tags: string[]) => {
     });
   });
 });
+
+ipcMain.handle("LOAD_TAGS", async () =>
+  _.map(
+    await prisma.tag.findMany({
+      select: {
+        tag: true,
+      },
+    }),
+    "tag"
+  )
+);

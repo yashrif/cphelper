@@ -34,7 +34,7 @@ export const RatingSlider = ({ setIsLoadingFinished }: any) => {
   useEffect(() => {
     setIsLoadingFinished((prevState: boolean[]) => {
       const newState = [...prevState];
-      newState[0] = isProblemRatingLoaded === Loading.SUCCEEDED;
+      newState[0] = isProblemRatingLoaded.load === Loading.SUCCEEDED;
       return newState;
     });
   }, [isProblemRatingLoaded]);
