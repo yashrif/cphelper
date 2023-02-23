@@ -7,7 +7,7 @@ import { SideBar } from "./reusable/SideBar";
 import { ProblemSet } from "./problemSet";
 import { Problem } from "./problem/Problem";
 import { useAppDispatch } from "../hooks/hooks";
-import { loadHandle } from "../store/slices/preferencesSlice";
+import { loadHandle } from "../store/slices/settingsSlice";
 
 export const App = () => {
   const dispatch = useAppDispatch();
@@ -20,7 +20,6 @@ export const App = () => {
     <Grid
       h={"100vh"}
       w={"100vw"}
-      // py={"36"}
       overflow={"hidden"}
       templateColumns={"auto 1fr"}
       columnGap={"16"}

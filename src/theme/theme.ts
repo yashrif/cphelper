@@ -44,6 +44,7 @@ export const theme = extendTheme({
     bg4: "#f7faff",
     bg5: "#f9fcfe",
     bg6: "#f2f3f4",
+    bg7: "#d2e5f7",
 
     font: {
       focused: "#18181B",

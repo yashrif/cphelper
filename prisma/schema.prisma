@@ -35,7 +35,7 @@ model ProblemRating {
   min Int
 }
 
-model Preferences {
+model Settings {
   id     Int    @id
   handle String
 }

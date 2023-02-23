@@ -33,7 +33,7 @@ export const loadHandle = ipcMain.handle(
   "LOAD_HANDLE",
   async () =>
     (
-      await prisma.preferences.findUnique({
+      await prisma.settings.findUnique({
         where: { id: 1 },
         select: {
           handle: true,

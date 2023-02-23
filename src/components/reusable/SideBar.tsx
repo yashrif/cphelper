@@ -1,59 +1,52 @@
 import React from "react";
-import { Box, Center, Flex, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, Text, VStack } from "@chakra-ui/react";
 import {
-  IoGridOutline,
-  IoCalendarClearOutline,
-  IoPieChartOutline,
+  IoSettingsOutline,
   IoPersonOutline,
-  IoLogOutOutline,
+  IoReaderOutline,
+  IoBookmarkOutline,
 } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 export const SideBar = () => {
+  interface NavBar {
+    icon: JSX.Element;
+    title: string;
+    link: string;
+  }
+
   const NavBar = [
     {
-      icon: <IoGridOutline size={"2rem"} />,
-      title: "Dashboard",
+      icon: <IoPersonOutline size={"2rem"} color={"#666"} />,
+      title: "Profile",
       link: "",
     },
     {
-      icon: <IoCalendarClearOutline size={"2rem"} />,
-      title: "Problem Set",
+      icon: <IoReaderOutline size={"2rem"} color={"#666"} />,
+      title: "Problems",
       link: "/problemset",
     },
-    // {
-    //   icon: <IoCalendarClearOutline size={"2rem"} />,
-    //   title: "Calendar",
-    //   link: `${category}/calendar`,
-    // },
-    // {
-    //   icon: <IoPieChartOutline size={"2rem"} />,
-    //   title: "Statistics",
-    //   link: `${category}/statistics`,
-    // },
-    // {
-    //   icon: <IoPersonOutline size={"2rem"} />,
-    //   title: "Profile",
-    //   link: `${category}/profile`,
-    // },
+    {
+      icon: <IoBookmarkOutline size={"2rem"} color={"#666"} />,
+      title: "Collection",
+      link: "/collection",
+    },
 
     {
-      icon: <IoLogOutOutline size={"2rem"} />,
-      title: "Log out",
-      //   link: "home",
-      onClick: () => {
-        localStorage.clear();
-      },
+      icon: <IoSettingsOutline size={"2rem"} color={"#666"} />,
+      title: "Settings",
+      link: "/settings",
     },
-  ];
+  ] as NavBar[];
 
-  const renderedNavList = NavBar.map((value, index) => {
+  const renderedNavList = NavBar.map((value: NavBar, index) => {
     return (
       <Link key={index} to={`${value.link}`}>
         <Flex
           key={index}
           cursor="pointer"
           alignItems="center"
+          justifyContent={"center"}
           columnGap="12"
           px="24"
           py="16"
@@ -64,9 +57,8 @@ export const SideBar = () => {
           transition="all 0.3s"
           _hover={{
             color: "font.focused",
-            backgroundColor: "bg2",
+            backgroundColor: "bg7",
           }}
-          onClick={value.onClick}
         >
           {value.icon}
           <Text>{value.title}</Text>
@@ -94,15 +86,12 @@ export const SideBar = () => {
         px={"16"}
         py={"36"}
       >
-        <Flex
-          h="full"
-          direction="column"
-          justifyContent="space-between"
-          // pb="36"
-        >
-          <Box>{renderedNavList.slice(0, -1)}</Box>
+        <VStack h="full" justifyContent="space-between" alignItems={"stretch"}>
+          <VStack gap={"8"} alignItems={"stretch"}>
+            {renderedNavList.slice(0, -1)}
+          </VStack>
           <Box>{renderedNavList.slice(-1)}</Box>
-        </Flex>
+        </VStack>
       </Center>
     </>
   );

@@ -51,7 +51,7 @@ export const storeProblemRating = ipcMain.handle(
 export const storeHandle = ipcMain.handle(
   "STORE_HANDLE",
   async (__, handle: string) => {
-    await prisma.preferences.upsert({
+    await prisma.settings.upsert({
       where: {
         id: 1,
       },

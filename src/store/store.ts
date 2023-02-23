@@ -2,14 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 // import reduxLogger from "redux-logger";
 
 import cfSlice from "./slices/cfSlice";
-import preferencesSlice from "./slices/preferencesSlice";
+import preferencesSlice from "./slices/settingsSlice";
 import componentSlice from "./slices/utilsSlice";
 
 export const store = configureStore({
   reducer: {
     cf: cfSlice,
     component: componentSlice,
-    preferences: preferencesSlice,
+    settings: preferencesSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

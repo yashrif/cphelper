@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { Loading } from "../../common/types";
 
-interface Preferences {
+interface settings {
   handle: string;
   loading: {
     handle: {
@@ -16,7 +16,7 @@ const initialState = {
   loading: {
     handle: { load: Loading.IDLE, store: Loading.IDLE },
   },
-} as Preferences;
+} as settings;
 
 /* -------------------------------------------------------------------------- */
 /*                            Async action creators                           */
@@ -31,7 +31,7 @@ const initialState = {
 /* -------------------------------------------------------------------------- */
 
 export const storeHandle = createAsyncThunk(
-  "preferences/storeHandle",
+  "settings/storeHandle",
   async (handle: string) => await cf.storeHandle(handle)
 );
 
@@ -40,7 +40,7 @@ export const storeHandle = createAsyncThunk(
 /* -------------------------------------------------------------------------- */
 
 export const loadHandle = createAsyncThunk(
-  "preferences/loadHandle",
+  "settings/loadHandle",
   async () => await cf.loadHandle()
 );
 
@@ -48,8 +48,8 @@ export const loadHandle = createAsyncThunk(
 /*                                   Slices                                   */
 /* -------------------------------------------------------------------------- */
 
-const preferencesSlice = createSlice({
-  name: "preferences",
+const settingsSlice = createSlice({
+  name: "settings",
   initialState,
   reducers: {
     setHandle: (state, action: PayloadAction<string>) => {
@@ -99,5 +99,5 @@ const preferencesSlice = createSlice({
   },
 });
 
-export default preferencesSlice.reducer;
-export const { setHandle } = preferencesSlice.actions;
+export default settingsSlice.reducer;
+export const { setHandle } = settingsSlice.actions;

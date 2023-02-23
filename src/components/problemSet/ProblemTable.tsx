@@ -13,7 +13,8 @@ import {
   Tag,
   TagLabel,
 } from "@chakra-ui/react";
-import _, { size } from "lodash";
+import _ from "lodash";
+import {IoAddCircleOutline}
 
 import { Loading, Problem } from "../../common/types";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
@@ -161,6 +162,9 @@ export const ProblemTable = () => {
         <Td px={"12"} textAlign={"center"} borderRightRadius={"md"}>
           {problem.solvedCount}
         </Td>
+        <Td>
+
+        </Td>
       </Tr>
     ));
 
@@ -174,7 +178,7 @@ export const ProblemTable = () => {
         >
           <Thead>
             <Tr>
-              {["Id", "Problem Name", "Rating", "Solved Count"].map(
+              {["Id", "Problem Name", "Rating", "Solved Count", "as"].map(
                 (title, index) => (
                   <Th
                     key={index}
