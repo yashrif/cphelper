@@ -12,7 +12,7 @@ import {
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { Loading } from "../../common/types";
-import { fetchUserRatingHistory } from "../../store/actions/cfApiActions";
+import { fetchUserRatingHistory } from "../../store/actions/cf/cfApiActions";
 
 export const RatingCurve = () => {
   const GRAPH_ANIMATION_DELAY = 500;
@@ -21,7 +21,7 @@ export const RatingCurve = () => {
   const [isShowGraph, setIsShowGraph] = useState(false);
   // const [isShowDots, setIsShowDots] = useState(false);
 
-  const useDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const handle = useAppSelector((state) => state.preferences.handle);
   const userRatingHistory = useAppSelector(
@@ -32,7 +32,7 @@ export const RatingCurve = () => {
   );
 
   useEffect(() => {
-    useDispatch(fetchUserRatingHistory(handle));
+    dispatch(fetchUserRatingHistory(handle));
   }, []);
 
   useEffect(() => {

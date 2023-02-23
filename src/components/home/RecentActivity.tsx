@@ -7,10 +7,10 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { Loading, Submission, Verdict } from "../../common/types";
-import { fetchUserStatus } from "../../store/actions/cfApiActions";
+import { fetchUserStatus } from "../../store/actions/cf/cfApiActions";
 
 export const RecentActivity = () => {
-  const useDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const handle = useAppSelector((state) => state.preferences.handle);
   const userStatus = useAppSelector((state) => state.cf.userStatus);
@@ -19,7 +19,7 @@ export const RecentActivity = () => {
   );
 
   useEffect(() => {
-    useDispatch(fetchUserStatus(handle));
+    dispatch(fetchUserStatus(handle));
   }, []);
 
   const secondsToDate = (sec: number) => {

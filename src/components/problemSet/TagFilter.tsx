@@ -3,19 +3,19 @@ import { Select } from "chakra-react-select";
 import _ from "lodash";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { updateSelectedProblemTags } from "../../store/slices/componentSlice";
-import { loadProblemTags } from "../../store/actions/cfDbActions";
+import { updateSelectedProblemTags } from "../../store/slices/utilsSlice";
+import { loadProblemTags } from "../../store/actions/cf/cfDbActions";
 
 export const TagFilter = () => {
   const [customizedTags, setCustomizedTags] = useState(Object);
   const [selectedTags, setSelectedTags] = useState({});
 
-  const useDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const problemTags = useAppSelector((state) => state.cf.problemTags);
 
   useEffect(() => {
-    useDispatch(loadProblemTags());
+    dispatch(loadProblemTags());
   }, []);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export const TagFilter = () => {
   }, [problemTags]);
 
   useEffect(() => {
-    useDispatch(
+    dispatch(
       updateSelectedProblemTags(_.chain(selectedTags).map("value").value())
     );
   }, [selectedTags]);

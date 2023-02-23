@@ -3,7 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import cfSlice from "./slices/cfSlice";
 import preferencesSlice from "./slices/preferencesSlice";
-import componentSlice from "./slices/componentSlice";
+import componentSlice from "./slices/utilsSlice";
 
 export const store = configureStore({
   reducer: {

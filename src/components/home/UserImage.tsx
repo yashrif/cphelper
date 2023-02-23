@@ -4,24 +4,24 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { fetchUser } from "../../store/actions/cfApiActions";
+import { fetchUser } from "../../store/actions/cf/cfApiActions";
 import { BlobAnimation } from "./BlobAnimation";
-import { generateColorPalette } from "../../store/slices/componentSlice";
+import { generateColorPalette } from "../../store/slices/utilsSlice";
 import { Loading } from "../../common/types";
 
 export const UserCover = () => {
-  const useDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const handle = useAppSelector((state) => state.preferences.handle);
   const user = useAppSelector((state) => state.cf.user);
   const isUserLoaded = useAppSelector((state) => state.cf.loading.user);
 
   useEffect(() => {
-    handle && useDispatch(fetchUser(handle));
+    handle && dispatch(fetchUser(handle));
   }, [handle]);
 
   useEffect(() => {
-    useDispatch(generateColorPalette({ url: user?.titlePhoto }));
+    dispatch(generateColorPalette({ url: user?.titlePhoto }));
   }, [user]);
 
   return (

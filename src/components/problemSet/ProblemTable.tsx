@@ -17,7 +17,7 @@ import _, { size } from "lodash";
 
 import { Loading, Problem } from "../../common/types";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { fetchProblemSet } from "../../store/actions/cfApiActions";
+import { fetchProblemSet } from "../../store/actions/cf/cfApiActions";
 
 export const ProblemTable = () => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export const ProblemTable = () => {
   const [filteredProblemSet, setFilteredProblemSet] = useState<Problem[]>([]);
   const [problemSetIndexStart, setProblemSetIndexStart] = useState(0);
 
-  const useDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const selectedProblemTags = useAppSelector(
     (state) => state.component.selectedProblemTags
   );
@@ -45,7 +45,7 @@ export const ProblemTable = () => {
   );
 
   useEffect(() => {
-    useDispatch(fetchProblemSet(selectedProblemTags));
+    dispatch(fetchProblemSet(selectedProblemTags));
   }, [selectedProblemTags]);
 
   useEffect(() => {
@@ -131,7 +131,7 @@ export const ProblemTable = () => {
             "linear-gradient(90deg, hsla(210, 90%, 80%, 0.5) 0%, hsla(212, 93%, 49%, 0.75) 100%)",
         }}
         onClick={() => {
-          // useDispatch(
+          // dispatch(
           //   setSelectedProblemUrl([problem.contestId.toString(), problem.index])
           // );
 

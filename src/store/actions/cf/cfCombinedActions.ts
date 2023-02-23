@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { RootState } from "../store";
+import { RootState } from "../../store";
 import * as cf from "./cfActions";
-import { Loading } from "../../common/types";
+import { Loading } from "../../../common/types";
 
 /* ------------------ Update problem tags and store into db ----------------- */
 

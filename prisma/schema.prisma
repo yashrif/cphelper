@@ -37,5 +37,5 @@ model ProblemRating {
 
 model Preferences {
   id     Int    @id
-  handel String
+  handle String
 }

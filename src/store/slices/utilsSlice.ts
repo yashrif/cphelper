@@ -21,7 +21,7 @@ const initialState = {
 } as Component;
 
 export const generateColorPalette = createAsyncThunk(
-  "component/generateColorPalette",
+  "utils/generateColorPalette",
   async ({
     url,
     numberOfColors = 5,
@@ -39,7 +39,7 @@ export const generateColorPalette = createAsyncThunk(
 /* -------------------------------------------------------------------------- */
 
 const componentSlice = createSlice({
-  name: "component",
+  name: "utils",
   initialState,
   reducers: {
     updateSelectedProblemTags: (state, action: PayloadAction<string[]>) => {

@@ -1,13 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import { Grid } from "@chakra-ui/react";
 
 import { Home } from "./home";
 import { SideBar } from "./reusable/SideBar";
 import { ProblemSet } from "./problemSet";
-import { Problem } from "./problemSet/Problem";
+import { Problem } from "./problem/Problem";
+import { useAppDispatch } from "../hooks/hooks";
+import { loadHandle } from "../store/slices/preferencesSlice";
 
 export const App = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(loadHandle());
+  }, []);
+
   return (
     <Grid
       h={"100vh"}

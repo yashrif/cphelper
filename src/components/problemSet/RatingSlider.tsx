@@ -14,18 +14,18 @@ import {
 } from "@chakra-ui/react";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { setProblemRatingRange } from "../../store/slices/componentSlice";
-import { loadProblemRating } from "../../store/actions/cfDbActions";
+import { setProblemRatingRange } from "../../store/slices/utilsSlice";
+import { loadProblemRating } from "../../store/actions/cf/cfDbActions";
 
 export const RatingSlider = () => {
   const [ratingRange, setRatingRange] = useState([800, 3500]);
 
-  const useDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const problemRating = useAppSelector((state) => state.cf.problemRating);
 
   useEffect(() => {
-    useDispatch(loadProblemRating());
+    dispatch(loadProblemRating());
   }, []);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export const RatingSlider = () => {
         });
       }
 
-      useDispatch(setProblemRatingRange(ratingRange as [number, number]));
+      dispatch(setProblemRatingRange(ratingRange as [number, number]));
     }, 500);
 
     return () => clearTimeout(timer);

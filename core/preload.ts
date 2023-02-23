@@ -11,6 +11,9 @@ contextBridge.exposeInMainWorld("cf", {
   storeProblemRating: (problemRating: ProblemRating): Promise<void> =>
     ipcRenderer.invoke("STORE_PROBLEM_RATING", problemRating),
 
+  storeHandle: (handle: string): Promise<void> =>
+    ipcRenderer.invoke("STORE_HANDLE", handle),
+
   /* ---------------------------------- Load ---------------------------------- */
 
   loadProblemTags: (): Promise<string[]> =>
@@ -18,4 +21,6 @@ contextBridge.exposeInMainWorld("cf", {
 
   loadProblemRating: (): Promise<ProblemRating> =>
     ipcRenderer.invoke("LOAD_PROBLEM_RATING"),
+
+  loadHandle: (): Promise<string> => ipcRenderer.invoke("LOAD_HANDLE"),
 });

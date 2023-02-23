@@ -1,9 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import _ from "lodash";
-import apiCf from "../../apis/apiCf";
-import { Submission, Loading, Problem } from "../../common/types";
-import { RootState } from "../store";
+import apiCf from "../../../apis/apiCf";
+import { Submission, Loading, Problem } from "../../../common/types";
+import { RootState } from "../../store";
 
 /* ---------------------------- Fetch problem Set --------------------------- */
 

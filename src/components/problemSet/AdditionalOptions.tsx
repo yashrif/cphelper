@@ -2,18 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Flex, NumberInput, NumberInputField, Text } from "@chakra-ui/react";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { setProblemsPerPage } from "../../store/slices/componentSlice";
+import { setProblemsPerPage } from "../../store/slices/utilsSlice";
 
 export const AdditionalOptions = () => {
   const [problemsPerPage, updateProblemsPerPage] = useState(
     useAppSelector((state) => state.component.problemsPerPage)
   );
 
-  const useDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      useDispatch(setProblemsPerPage(problemsPerPage));
+      dispatch(setProblemsPerPage(problemsPerPage));
     }, 1000);
 
     return () => {

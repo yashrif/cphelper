@@ -7,7 +7,7 @@ import {
   Submission,
   User,
 } from "../../common/types";
-import * as cf from "../actions/cfActions";
+import * as cf from "../actions/cf/cfActions";
 
 /* ------------------------------- Interfaces ------------------------------- */
 
