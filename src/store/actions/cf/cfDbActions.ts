@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { ProblemRating } from "../../../common/types";
+import { Problem, ProblemRating } from "../../../common/types";
 
 /* -------------------------------------------------------------------------- */
 /*                                    Store                                   */
@@ -21,6 +21,11 @@ export const storeProblemRating = createAsyncThunk(
     await cf.storeProblemRating(problemRating)
 );
 
+export const storeProblem = createAsyncThunk(
+  "cf/storeProblem",
+  async (problem: Problem) => await cf.storeProblem(problem)
+);
+
 /* -------------------------------------------------------------------------- */
 /*                                    Load                                    */
 /* -------------------------------------------------------------------------- */
@@ -37,4 +42,9 @@ export const loadProblemTags = createAsyncThunk(
 export const loadProblemRating = createAsyncThunk(
   "cf/loadProblemRating",
   async () => await cf.loadProblemRating()
+);
+
+export const loadProblems = createAsyncThunk(
+  "cf/loadProblems",
+  async () => await cf.loadProblems()
 );

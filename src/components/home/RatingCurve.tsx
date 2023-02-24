@@ -23,7 +23,7 @@ export const RatingCurve = () => {
 
   const dispatch = useAppDispatch();
 
-  const handle = useAppSelector((state) => state.preferences.handle);
+  const handle = useAppSelector((state) => state.settings.handle);
   const userRatingHistory = useAppSelector(
     (state) => state.cf.userRatingHistory
   );

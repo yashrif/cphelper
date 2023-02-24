@@ -12,7 +12,7 @@ import { Loading } from "../../common/types";
 export const UserCover = () => {
   const dispatch = useAppDispatch();
 
-  const handle = useAppSelector((state) => state.preferences.handle);
+  const handle = useAppSelector((state) => state.settings.handle);
   const user = useAppSelector((state) => state.cf.user);
   const isUserLoaded = useAppSelector((state) => state.cf.loading.user);
 

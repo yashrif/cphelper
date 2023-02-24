@@ -25,6 +25,22 @@ export const loadProblemRating = ipcMain.handle(
     })
 );
 
+export const loadProblems = ipcMain.handle(
+  "LOAD_PROBLEMS",
+  async () =>
+    await prisma.problem.findMany({
+      select: {
+        contestId: true,
+        index: true,
+        name: true,
+        rating: true,
+        solvedCount: true,
+        tags: true,
+        type: true,
+      },
+    })
+);
+
 /* -------------------------------------------------------------------------- */
 /*                                 Preferences                                */
 /* -------------------------------------------------------------------------- */

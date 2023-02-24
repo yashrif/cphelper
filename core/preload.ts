@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
 
-import { ProblemRating } from "../src/common/types";
+import { Problem, ProblemRating } from "../src/common/types";
 
 contextBridge.exposeInMainWorld("cf", {
   /* ---------------------------------- Store --------------------------------- */
@@ -10,6 +10,9 @@ contextBridge.exposeInMainWorld("cf", {
 
   storeProblemRating: (problemRating: ProblemRating): Promise<void> =>
     ipcRenderer.invoke("STORE_PROBLEM_RATING", problemRating),
+
+  storeProblem: (problem: Problem): Promise<void> =>
+    ipcRenderer.invoke("STORE_PROBLEM", problem),
 
   storeHandle: (handle: string): Promise<void> =>
     ipcRenderer.invoke("STORE_HANDLE", handle),
@@ -21,6 +24,8 @@ contextBridge.exposeInMainWorld("cf", {
 
   loadProblemRating: (): Promise<ProblemRating> =>
     ipcRenderer.invoke("LOAD_PROBLEM_RATING"),
+
+  loadProblems: (): Promise<Problem[]> => ipcRenderer.invoke("LOAD_PROBLEMS"),
 
   loadHandle: (): Promise<string> => ipcRenderer.invoke("LOAD_HANDLE"),
 });

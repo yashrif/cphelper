@@ -8,7 +8,7 @@ import componentSlice from "./slices/utilsSlice";
 export const store = configureStore({
   reducer: {
     cf: cfSlice,
-    component: componentSlice,
+    utils: componentSlice,
     settings: preferencesSlice,
   },
   middleware: (getDefaultMiddleware) =>

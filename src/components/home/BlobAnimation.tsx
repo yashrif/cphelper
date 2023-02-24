@@ -11,10 +11,10 @@ export const BlobAnimation = () => {
   const [isFirstRender, setIsFirstRender] = useState(true);
 
   const profileColorPalette = useAppSelector(
-    (state) => state.component.profileColorPalette
+    (state) => state.utils.profileColorPalette
   );
   const isProfileColorPalette = useAppSelector(
-    (state) => state.component.loading.profileColorPalette
+    (state) => state.utils.loading.profileColorPalette
   );
 
   const style = {

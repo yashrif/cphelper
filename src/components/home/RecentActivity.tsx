@@ -12,7 +12,7 @@ import { fetchUserStatus } from "../../store/actions/cf/cfApiActions";
 export const RecentActivity = () => {
   const dispatch = useAppDispatch();
 
-  const handle = useAppSelector((state) => state.preferences.handle);
+  const handle = useAppSelector((state) => state.settings.handle);
   const userStatus = useAppSelector((state) => state.cf.userStatus);
   const isUserStatusLoaded = useAppSelector(
     (state) => state.cf.loading.userStatus

@@ -1,7 +1,7 @@
 import { ipcMain } from "electron";
 
 import { prisma } from "./prismaClient";
-import { ProblemRating } from "../../src/common/types";
+import { Problem, ProblemRating } from "../../src/common/types";
 
 /* -------------------------------------------------------------------------- */
 /*                                     Cf                                     */
@@ -42,6 +42,24 @@ export const storeProblemRating = ipcMain.handle(
       },
     });
   }
+);
+
+export const storeProblem = ipcMain.handle(
+  "STORE_PROBLEM",
+  async (__, problem: Problem) =>
+    await prisma.problem.create({
+      data: {
+        contestId: problem.contestId,
+        index: problem.index,
+        name: problem.name,
+        rating: problem.rating,
+        solvedCount: problem.solvedCount,
+        tags: {
+          connect: problem.tags.map((tag) => ({ tag: tag })),
+        },
+        type: problem.type,
+      },
+    })
 );
 
 /* -------------------------------------------------------------------------- */

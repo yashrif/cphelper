@@ -12,7 +12,12 @@ import * as cf from "../actions/cf/cfActions";
 /* ------------------------------- Interfaces ------------------------------- */
 
 interface ProblemsFetchState {
+  addedProblems: Problem[];
   loading: {
+    addedProblems: {
+      load: Loading;
+      store: Loading;
+    };
     problemRating: {
       fetch: Loading;
       load: Loading;
@@ -43,6 +48,10 @@ interface ProblemsFetchState {
 
 const initialState = {
   loading: {
+    addedProblems: {
+      load: Loading.IDLE,
+      store: Loading.IDLE,
+    },
     problemRating: {
       fetch: Loading.IDLE,
       load: Loading.IDLE,
@@ -70,7 +79,24 @@ const initialState = {
 const problemSlice = createSlice({
   name: "cf",
   initialState,
-  reducers: {},
+  reducers: {
+    /* -------------------------- Update added problem -------------------------- */
+
+    addProblem: (state, action: PayloadAction<Problem>) => {
+      if (state.addedProblems) state.addedProblems.push(action.payload);
+      else state.addedProblems = [action.payload];
+    },
+
+    removeProblem: (state, action: PayloadAction<Problem>) => {
+      state.addedProblems = state.addedProblems.filter((problem) => {
+        return (
+          problem.contestId !== action.payload.contestId &&
+          problem.index !== action.payload.index
+        );
+      });
+    },
+  },
+
   extraReducers: (builder) => {
     /* ------------------------------ Problem List ------------------------------ */
 
@@ -179,26 +205,6 @@ const problemSlice = createSlice({
       state.loading.userStatus = Loading.FAILED;
     });
 
-    /* --------------------- fetchUserRatingHistoryAndStatus -------------------- */
-
-    builder.addCase(cf.fetchUserRatingHistoryAndStatus.pending, (state) => {
-      state.loading.userRatingHistoryAndStatus = Loading.PENDING;
-    });
-
-    builder.addCase(cf.fetchUserRatingHistoryAndStatus.fulfilled, (state) => {
-      if (
-        state.loading.user === Loading.SUCCEEDED &&
-        state.loading.userRatingHistory === Loading.SUCCEEDED &&
-        state.loading.userStatus === Loading.SUCCEEDED
-      )
-        state.loading.userRatingHistoryAndStatus = Loading.SUCCEEDED;
-      else state.loading.userRatingHistoryAndStatus = Loading.FAILED;
-    });
-
-    builder.addCase(cf.fetchUserRatingHistoryAndStatus.rejected, (state) => {
-      state.loading.userRatingHistoryAndStatus = Loading.FAILED;
-    });
-
     /* -------------------------------------------------------------------------- */
     /*                                     DB                                     */
     /* -------------------------------------------------------------------------- */
@@ -233,6 +239,20 @@ const problemSlice = createSlice({
 
     builder.addCase(cf.storeProblemRating.rejected, (state) => {
       state.loading.problemRating.store = Loading.FAILED;
+    });
+
+    /* ----------------------------- Update problem ----------------------------- */
+
+    builder.addCase(cf.storeProblem.pending, (state) => {
+      state.loading.addedProblems.store = Loading.PENDING;
+    });
+
+    builder.addCase(cf.storeProblem.fulfilled, (state) => {
+      state.loading.addedProblems.store = Loading.SUCCEEDED;
+    });
+
+    builder.addCase(cf.storeProblem.rejected, (state) => {
+      state.loading.addedProblems.store = Loading.FAILED;
     });
 
     /* -------------------------------------------------------------------------- */
@@ -275,9 +295,47 @@ const problemSlice = createSlice({
       state.loading.problemRating.load = Loading.FAILED;
     });
 
+    /* ----------------------------- Update problem ----------------------------- */
+
+    builder.addCase(cf.loadProblems.pending, (state) => {
+      state.loading.addedProblems.load = Loading.PENDING;
+    });
+
+    builder.addCase(
+      cf.loadProblems.fulfilled,
+      (state, action: PayloadAction<Problem[]>) => {
+        state.loading.addedProblems.load = Loading.SUCCEEDED;
+        state.addedProblems = action.payload;
+      }
+    );
+
+    builder.addCase(cf.loadProblems.rejected, (state) => {
+      state.loading.addedProblems.load = Loading.FAILED;
+    });
+
     /* -------------------------------------------------------------------------- */
-    /*                                  Combined                                  */
+    /*                                   Hybrid                                   */
     /* -------------------------------------------------------------------------- */
+
+    /* --------------------- fetchUserRatingHistoryAndStatus -------------------- */
+
+    builder.addCase(cf.fetchUserRatingHistoryAndStatus.pending, (state) => {
+      state.loading.userRatingHistoryAndStatus = Loading.PENDING;
+    });
+
+    builder.addCase(cf.fetchUserRatingHistoryAndStatus.fulfilled, (state) => {
+      if (
+        state.loading.user === Loading.SUCCEEDED &&
+        state.loading.userRatingHistory === Loading.SUCCEEDED &&
+        state.loading.userStatus === Loading.SUCCEEDED
+      )
+        state.loading.userRatingHistoryAndStatus = Loading.SUCCEEDED;
+      else state.loading.userRatingHistoryAndStatus = Loading.FAILED;
+    });
+
+    builder.addCase(cf.fetchUserRatingHistoryAndStatus.rejected, (state) => {
+      state.loading.userRatingHistoryAndStatus = Loading.FAILED;
+    });
 
     /* ----------------------- Update Problem tags & store ---------------------- */
 
@@ -288,7 +346,7 @@ const problemSlice = createSlice({
     builder.addCase(cf.updateProblemTagsAndStore.fulfilled, (state) => {
       if (
         state.loading.problemTags.fetch === Loading.SUCCEEDED &&
-        state.loading.problemTags.store
+        state.loading.problemTags.store === Loading.SUCCEEDED
       )
         state.loading.problemTags.fetchAndStore = Loading.SUCCEEDED;
       else state.loading.problemTags.fetchAndStore = Loading.FAILED;
@@ -307,7 +365,7 @@ const problemSlice = createSlice({
     builder.addCase(cf.updateProblemRatingAndStore.fulfilled, (state) => {
       if (
         state.loading.problemRating.fetch === Loading.SUCCEEDED &&
-        state.loading.problemRating.store
+        state.loading.problemRating.store === Loading.SUCCEEDED
       )
         state.loading.problemRating.fetchAndStore = Loading.SUCCEEDED;
       else state.loading.problemRating.fetchAndStore = Loading.FAILED;
@@ -320,3 +378,4 @@ const problemSlice = createSlice({
 });
 
 export default problemSlice.reducer;
+export const { addProblem, removeProblem } = problemSlice.actions;

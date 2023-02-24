@@ -6,7 +6,7 @@ import { setProblemsPerPage } from "../../store/slices/utilsSlice";
 
 export const AdditionalOptions = () => {
   const [problemsPerPage, updateProblemsPerPage] = useState(
-    useAppSelector((state) => state.component.problemsPerPage)
+    useAppSelector((state) => state.utils.problemsPerPage)
   );
 
   const dispatch = useAppDispatch();

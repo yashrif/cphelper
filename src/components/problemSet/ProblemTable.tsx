@@ -14,17 +14,18 @@ import {
   TagLabel,
 } from "@chakra-ui/react";
 import _ from "lodash";
-import {IoAddCircleOutline}
+import { IoAddCircleOutline } from "react-icons/io5";
 
 import { Loading, Problem } from "../../common/types";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { fetchProblemSet } from "../../store/actions/cf/cfApiActions";
+import { updateAddedProblemsAndStore } from "../../store/actions/cf/cfActions";
 
 export const ProblemTable = () => {
   const navigate = useNavigate();
 
   const PROBLEM_NAME_MAX_LENGTH = 25;
-  const PROBLEM_TAG_MAX_LENGTH = 40;
+  // const PROBLEM_TAG_MAX_LENGTH = 40;
 
   const [filteredProblemSetAll, setFilteredProblemSetAll] = useState<Problem[]>(
     []
@@ -34,15 +35,15 @@ export const ProblemTable = () => {
 
   const dispatch = useAppDispatch();
   const selectedProblemTags = useAppSelector(
-    (state) => state.component.selectedProblemTags
+    (state) => state.utils.selectedProblemTags
   );
   const problemSet = useAppSelector((state) => state.cf.problemSet);
   const isProblemSet = useAppSelector((state) => state.cf.loading.problemSet);
   const problemRatingRange = useAppSelector(
-    (state) => state.component.problemRatingRange
+    (state) => state.utils.problemRatingRange
   );
   const problemsPerPage = useAppSelector(
-    (state) => state.component.problemsPerPage
+    (state) => state.utils.problemsPerPage
   );
 
   useEffect(() => {
@@ -69,33 +70,33 @@ export const ProblemTable = () => {
     );
   }, [filteredProblemSetAll, problemsPerPage]);
 
-  const makeSlice = (...args: string[]) => {
-    const tagString = args.join(", ");
+  // const makeSlice = (...args: string[]) => {
+  //   const tagString = args.join(", ");
 
-    let indexStart = 0;
-    const newTagString: string[] = [];
+  //   let indexStart = 0;
+  //   const newTagString: string[] = [];
 
-    for (let i = 0; i < (tagString.length / 2) * 2; i++) {
-      if (indexStart + PROBLEM_TAG_MAX_LENGTH >= tagString.length) {
-        newTagString.push(tagString.slice(indexStart));
-        break;
-      }
+  //   for (let i = 0; i < (tagString.length / 2) * 2; i++) {
+  //     if (indexStart + PROBLEM_TAG_MAX_LENGTH >= tagString.length) {
+  //       newTagString.push(tagString.slice(indexStart));
+  //       break;
+  //     }
 
-      const lastIndex =
-        _.lastIndexOf(
-          tagString.slice(indexStart, indexStart + PROBLEM_TAG_MAX_LENGTH),
-          ","
-        ) + 1;
+  //     const lastIndex =
+  //       _.lastIndexOf(
+  //         tagString.slice(indexStart, indexStart + PROBLEM_TAG_MAX_LENGTH),
+  //         ","
+  //       ) + 1;
 
-      const sliceLength =
-        lastIndex > PROBLEM_TAG_MAX_LENGTH ? PROBLEM_TAG_MAX_LENGTH : lastIndex;
+  //     const sliceLength =
+  //       lastIndex > PROBLEM_TAG_MAX_LENGTH ? PROBLEM_TAG_MAX_LENGTH : lastIndex;
 
-      newTagString.push(tagString.slice(indexStart, indexStart + sliceLength));
-      indexStart += lastIndex;
-    }
+  //     newTagString.push(tagString.slice(indexStart, indexStart + sliceLength));
+  //     indexStart += lastIndex;
+  //   }
 
-    return newTagString;
-  };
+  //   return newTagString;
+  // };
 
   const renderTags = (tags: string[]) =>
     tags.map((tag, index) => (
@@ -104,8 +105,6 @@ export const ProblemTable = () => {
         size={"md"}
         borderRadius="full"
         variant="solid"
-        // colorScheme="primary"
-        // backgroundColor={"primary.400"}
         background={
           "linear-gradient(90deg, hsla(210, 90%, 80%, .85) 0%, hsla(212, 93%, 49%, .9) 100%)"
         }
@@ -121,29 +120,52 @@ export const ProblemTable = () => {
     problems.map((problem, index) => (
       <Tr
         key={index}
+        color={"font.general"}
         fontSize={"lg"}
         cursor={"pointer"}
         transition={"all .3s"}
         overflow={"hidden"}
         backgroundColor={"transparent"}
+        boxShadow={"none"}
         _hover={{
-          transform: "scale(1.03)",
           background:
-            "linear-gradient(90deg, hsla(210, 90%, 80%, 0.5) 0%, hsla(212, 93%, 49%, 0.75) 100%)",
-        }}
-        onClick={() => {
-          // dispatch(
-          //   setSelectedProblemUrl([problem.contestId.toString(), problem.index])
-          // );
-
-          navigate(`/problemset/problem/${problem.contestId}/${problem.index}`);
+            "linear-gradient(90deg, hsla(210, 90%, 80%, 0.15) 0%, hsla(212, 93%, 49%, 0.3) 100%)",
+          boxShadow: "0.4rem 0.4rem 0.8rem rgba(28, 126, 214, .15)",
         }}
       >
-        <Td px={"12"} textAlign={"center"} borderLeftRadius={"md"}>
+        <Td
+          px={"12"}
+          fontWeight={"medium"}
+          textAlign={"center"}
+          borderLeftRadius={"md"}
+          transition={"all .3s"}
+          _hover={{
+            color: "primary.400",
+          }}
+          onClick={() => {
+            navigate(
+              `/problemset/problem/${problem.contestId}/${problem.index}`
+            );
+          }}
+        >
           {problem.contestId + problem.index}
         </Td>
-        <Td px={"12"}>
-          <Text mb={"12"}>
+
+        <Td
+          px={"12"}
+          transition={"all .3s"}
+          onClick={() => {
+            navigate(
+              `/problemset/problem/${problem.contestId}/${problem.index}`
+            );
+          }}
+        >
+          <Text
+            mb={"12"}
+            _hover={{
+              color: "primary.400",
+            }}
+          >
             {problem.name.slice(0, PROBLEM_NAME_MAX_LENGTH) +
               (problem.name.length > PROBLEM_NAME_MAX_LENGTH ? "..." : "")}
           </Text>
@@ -151,19 +173,42 @@ export const ProblemTable = () => {
             {renderTags(problem.tags)}
           </HStack>
         </Td>
-        {/* <Td px={"12"} fontSize={"md"}>
-          {makeSlice(...problem.tags).map((tag, index) => (
-            <Text key={index}>{tag}</Text>
-          ))}
-        </Td> */}
-        <Td px={"12"} textAlign={"center"}>
+
+        <Td
+          px={"12"}
+          textAlign={"center"}
+          transition={"all .3s"}
+          _hover={{
+            color: "primary.400",
+          }}
+        >
           {problem.rating}
         </Td>
-        <Td px={"12"} textAlign={"center"} borderRightRadius={"md"}>
+
+        <Td
+          px={"12"}
+          textAlign={"center"}
+          transition={"all .3s"}
+          _hover={{
+            color: "primary.400",
+          }}
+        >
           {problem.solvedCount}
         </Td>
-        <Td>
 
+        <Td
+          px={"12"}
+          textAlign={"center"}
+          borderRightRadius={"md"}
+          transition={"all .3s"}
+          _hover={{
+            transform: "scale(1.15)",
+          }}
+          onClick={() => {
+            dispatch(updateAddedProblemsAndStore(problem));
+          }}
+        >
+          <IoAddCircleOutline size={"2.4rem"} color={"#37b24d"} />
         </Td>
       </Tr>
     ));
@@ -178,7 +223,7 @@ export const ProblemTable = () => {
         >
           <Thead>
             <Tr>
-              {["Id", "Problem Name", "Rating", "Solved Count", "as"].map(
+              {["Id", "Problem Name", "Rating", "Solved", ""].map(
                 (title, index) => (
                   <Th
                     key={index}

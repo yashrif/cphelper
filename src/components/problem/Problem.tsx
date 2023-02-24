@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { Box } from "@chakra-ui/react";
+import { Box, Spinner } from "@chakra-ui/react";
 
 import { cfProblemURL, cfSubmitURL } from "../../common/utils";
-import style from "./Problem.css";
+import style from "./Problem.css?inline";
 
 export const Problem = () => {
   const { id, index } = useParams();
@@ -30,7 +30,28 @@ export const Problem = () => {
               }
         `}
       </style>
-      <Box id={`${id}${index}`} h={"full"} w={"full"} overflowY={"scroll"}>
+      <Box
+        id={`${id}${index}`}
+        h={"full"}
+        w={"full"}
+        overflowY={"scroll"}
+        position={"relative"}
+      >
+        {!refProblem.current && (
+          <Box height={"100vh"} width={"full"} position={"absolute"}>
+            <Spinner
+              position={"absolute"}
+              top={"50%"}
+              left={"50%"}
+              transform={"translate(-50%, -50%)"}
+              thickness=".3rem"
+              speed="0.5s"
+              emptyColor="primary.100"
+              color="primary.500"
+              size="xl"
+            />
+          </Box>
+        )}
         <webview
           ref={refProblem}
           src={`${cfProblemURL}/${id}/${index}`}

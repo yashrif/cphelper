@@ -5,6 +5,8 @@ export interface Cf {
 
   storeProblemRating: (problemRating: ProblemRating) => Promise<void>;
 
+  storeProblem: (problem: Problem) => Promise<void>;
+
   storeHandle: (handle: string) => Promise<void>;
 
   /* ---------------------------------- Load ---------------------------------- */
@@ -12,6 +14,8 @@ export interface Cf {
   loadProblemTags: () => Promise<string[]>;
 
   loadProblemRating: () => Promise<ProblemRating>;
+
+  loadProblems: () => Promise<Problem[]>;
 
   loadHandle: () => Promise<string>;
 }

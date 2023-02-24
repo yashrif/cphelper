@@ -16,5 +16,18 @@ CREATE TABLE "Problem" (
     "type" TEXT NOT NULL
 );
 
+-- CreateTable
+CREATE TABLE "ProblemRating" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "max" INTEGER NOT NULL,
+    "min" INTEGER NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "Settings" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "handle" TEXT NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Problem_contestId_index_key" ON "Problem"("contestId", "index");

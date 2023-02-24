@@ -11,10 +11,10 @@ import { Loading } from "../../common/types";
 
 export const WaveAnimation = () => {
   const profileColorPalette = useAppSelector(
-    (state) => state.component.profileColorPalette
+    (state) => state.utils.profileColorPalette
   );
   const isProfileColorPaletteLoaded = useAppSelector(
-    (state) => state.component.loading.profileColorPalette
+    (state) => state.utils.loading.profileColorPalette
   );
 
   useEffect(() => {
