@@ -8,7 +8,7 @@ import {
   Grid,
   GridItem,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   IoSettingsOutline,
   IoPersonOutline,
@@ -21,6 +21,8 @@ import { loadProblems } from "../../store/actions/cf/cfActions";
 
 export const SideBar = () => {
   // const NUMBER_OF_PROBLEMS = 5;
+
+  const location = useLocation();
 
   const [isCollectionExpanded, setIsCollectionExpanded] = useState(false);
 
@@ -105,6 +107,10 @@ export const SideBar = () => {
 
   renderedNavList.splice(-1, 0, collectionNav);
 
+  /* -------------------------------------------------------------------------- */
+  /*     Import sidebar in every needed components instead of App component     */
+  /* -------------------------------------------------------------------------- */
+
   return (
     <>
       <style>
@@ -114,7 +120,9 @@ export const SideBar = () => {
           }
         `}
       </style>
+
       <Center
+        display={location.pathname === "/welcome" ? "none" : "block"}
         boxShadow={"0.2rem 0 3.6rem rgba(28, 126, 214, .08)"}
         className="dashboard-navbar"
         h={"full"}

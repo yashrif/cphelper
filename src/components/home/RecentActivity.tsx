@@ -19,8 +19,8 @@ export const RecentActivity = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchUserStatus(handle));
-  }, []);
+    if (handle) dispatch(fetchUserStatus(handle));
+  }, [handle]);
 
   const secondsToDate = (sec: number) => {
     const t = new Date(1970, 0, 1);

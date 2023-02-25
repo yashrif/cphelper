@@ -11,6 +11,7 @@ interface Component {
   problemsPerPage: number;
   profileColorPalette: ColorArray[];
   selectedProblemTags: string[];
+  totalFilteredProblems: number;
 }
 
 const initialState = {
@@ -53,6 +54,10 @@ const componentSlice = createSlice({
     setProblemsPerPage: (state, action: PayloadAction<number>) => {
       state.problemsPerPage = action.payload;
     },
+
+    setTotalFilteredProblems: (state, action: PayloadAction<number>) => {
+      state.totalFilteredProblems = action.payload;
+    },
   },
   extraReducers: (builder) => {
     /* ------------------------------ Color Palette ----------------------------- */
@@ -79,5 +84,6 @@ export default componentSlice.reducer;
 export const {
   setProblemRatingRange,
   setProblemsPerPage,
+  setTotalFilteredProblems,
   updateSelectedProblemTags,
 } = componentSlice.actions;

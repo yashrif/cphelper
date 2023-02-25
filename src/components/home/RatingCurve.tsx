@@ -32,8 +32,10 @@ export const RatingCurve = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchUserRatingHistory(handle));
-  }, []);
+    if (handle) dispatch(fetchUserRatingHistory(handle));
+  }, [handle]);
+
+  console.log(handle)
 
   useEffect(() => {
     const graphTimer = setTimeout(() => {
@@ -50,7 +52,7 @@ export const RatingCurve = () => {
       clearTimeout(graphTimer);
       // clearTimeout(graphDotTimer);
     };
-  }, [isUserRatingHistory]);
+  }, [isUserRatingHistory, handle]);
 
   return (
     /*

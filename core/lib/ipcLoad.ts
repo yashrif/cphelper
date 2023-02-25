@@ -25,21 +25,24 @@ export const loadProblemRating = ipcMain.handle(
     })
 );
 
-export const loadProblems = ipcMain.handle(
-  "LOAD_PROBLEMS",
-  async () =>
-    await prisma.problem.findMany({
-      select: {
-        contestId: true,
-        index: true,
-        name: true,
-        rating: true,
-        solvedCount: true,
-        tags: true,
-        type: true,
+export const loadProblems = ipcMain.handle("LOAD_PROBLEMS", async () => {
+  const problems = await prisma.problem.findMany({
+    include: {
+      tags: {
+        select: {
+          tag: true,
+        },
       },
-    })
-);
+    },
+  });
+
+  return problems.map((problem) => {
+    const tags = _.map(problem.tags, "tag");
+    const updatedTag = _.omit(problem, ["tags"]);
+
+    return { ...updatedTag, tags };
+  });
+});
 
 /* -------------------------------------------------------------------------- */
 /*                                 Preferences                                */

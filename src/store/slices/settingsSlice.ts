@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Loading } from "../../common/types";
 
 interface settings {
-  handle: string;
+  handle: string | null;
   loading: {
     handle: {
       load: Loading;
@@ -45,6 +45,19 @@ export const loadHandle = createAsyncThunk(
 );
 
 /* -------------------------------------------------------------------------- */
+/*                                   Hybrid                                   */
+/* -------------------------------------------------------------------------- */
+
+export const setAndStoreHandle = createAsyncThunk(
+  "settings/setAndStoreHandle",
+  async (handle: string, { dispatch }) => {
+    dispatch(setHandle(handle));
+
+    await dispatch(storeHandle(handle));
+  }
+);
+
+/* -------------------------------------------------------------------------- */
 /*                                   Slices                                   */
 /* -------------------------------------------------------------------------- */
 
@@ -52,7 +65,7 @@ const settingsSlice = createSlice({
   name: "settings",
   initialState,
   reducers: {
-    setHandle: (state, action: PayloadAction<string>) => {
+    setHandle: (state, action: PayloadAction<string | null>) => {
       state.handle = action.payload;
     },
   },
@@ -96,6 +109,10 @@ const settingsSlice = createSlice({
     builder.addCase(loadHandle.rejected, (state) => {
       state.loading.handle.load = Loading.FAILED;
     });
+
+    /* -------------------------------------------------------------------------- */
+    /*                                   Hybrid                                   */
+    /* -------------------------------------------------------------------------- */
   },
 });
 

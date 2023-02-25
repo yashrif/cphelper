@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
+import _ from "lodash";
 
 import {
   Loading,
@@ -72,6 +73,11 @@ const initialState = {
   },
 } as ProblemsFetchState;
 
+/**
+ *                                  !! IMPORTANT
+ *       * TODO: Make problem list object with the key of contestId & index
+ */
+
 /* -------------------------------------------------------------------------- */
 /*                                   Slices                                   */
 /* -------------------------------------------------------------------------- */
@@ -83,8 +89,14 @@ const problemSlice = createSlice({
     /* -------------------------- Update added problem -------------------------- */
 
     addProblem: (state, action: PayloadAction<Problem>) => {
-      if (state.addedProblems) state.addedProblems.push(action.payload);
-      else state.addedProblems = [action.payload];
+      if (state.addedProblems) {
+        if (
+          !_.find(current(state.addedProblems), {
+            contestId: action.payload.contestId,
+          })
+        )
+          state.addedProblems.push(action.payload);
+      } else state.addedProblems = [action.payload];
     },
 
     removeProblem: (state, action: PayloadAction<Problem>) => {

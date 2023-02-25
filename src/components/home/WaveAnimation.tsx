@@ -19,33 +19,34 @@ export const WaveAnimation = () => {
 
   useEffect(() => {
     /* ---------------------- TODO: Set Timer for each wave ---------------------- */
+    setTimeout(() => {
+      kute
+        .fromTo(
+          "#wave1",
+          { path: "#wave1" },
+          { path: "#wave4" },
+          { repeat: 99999, duration: 1200, yoyo: true }
+        )
+        .start();
 
-    kute
-      .fromTo(
-        "#wave1",
-        { path: "#wave1" },
-        { path: "#wave4" },
-        { repeat: 99999, duration: 1200, yoyo: true }
-      )
-      .start();
+      kute
+        .fromTo(
+          "#wave2",
+          { path: "#wave2" },
+          { path: "#wave3" },
+          { repeat: 99999, duration: 1500, yoyo: true }
+        )
+        .start();
 
-    kute
-      .fromTo(
-        "#wave2",
-        { path: "#wave2" },
-        { path: "#wave3" },
-        { repeat: 99999, duration: 1500, yoyo: true }
-      )
-      .start();
-
-    kute
-      .fromTo(
-        "#wave3",
-        { path: "#wave3" },
-        { path: "#wave4" },
-        { repeat: 99999, duration: 2200, yoyo: true }
-      )
-      .start();
+      kute
+        .fromTo(
+          "#wave3",
+          { path: "#wave3" },
+          { path: "#wave4" },
+          { repeat: 99999, duration: 2200, yoyo: true }
+        )
+        .start();
+    }, 10);
   }, []);
 
   return (
@@ -58,7 +59,7 @@ export const WaveAnimation = () => {
       overflow={"hidden"}
       position={"relative"}
     >
-      {/* TODO: impliment content info / quotes */}
+      {/* TODO: implement content info / quotes */}
 
       <Text
         fontSize={"lg"}

@@ -47,15 +47,29 @@ export const storeProblemRating = ipcMain.handle(
 export const storeProblem = ipcMain.handle(
   "STORE_PROBLEM",
   async (__, problem: Problem) =>
-    await prisma.problem.create({
-      data: {
+    await prisma.problem.upsert({
+      where: {
+        contestId_index: { contestId: problem.contestId, index: problem.index },
+      },
+      create: {
         contestId: problem.contestId,
         index: problem.index,
         name: problem.name,
         rating: problem.rating,
         solvedCount: problem.solvedCount,
         tags: {
-          connect: problem.tags.map((tag) => ({ tag: tag })),
+          connect: problem?.tags?.map((tag) => ({ tag: tag })),
+        },
+        type: problem.type,
+      },
+      update: {
+        contestId: problem.contestId,
+        index: problem.index,
+        name: problem.name,
+        rating: problem.rating,
+        solvedCount: problem.solvedCount,
+        tags: {
+          connect: problem?.tags?.map((tag) => ({ tag: tag })),
         },
         type: problem.type,
       },

@@ -20,6 +20,8 @@ import { Loading, Problem } from "../../common/types";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { fetchProblemSet } from "../../store/actions/cf/cfApiActions";
 import { updateAddedProblemsAndStore } from "../../store/actions/cf/cfActions";
+import { Pagination } from "./Pagination";
+import { setTotalFilteredProblems } from "../../store/slices/utilsSlice";
 
 export const ProblemTable = () => {
   const navigate = useNavigate();
@@ -51,15 +53,20 @@ export const ProblemTable = () => {
   }, [selectedProblemTags]);
 
   useEffect(() => {
-    setFilteredProblemSetAll(
-      _.filter(
-        problemSet,
-        (value) =>
-          value.rating >= problemRatingRange[0] &&
-          value.rating <= problemRatingRange[1]
-      )
-    );
+    if (problemSet && problemRatingRange)
+      setFilteredProblemSetAll(
+        _.filter(
+          problemSet,
+          (value) =>
+            value?.rating >= problemRatingRange[0] &&
+            value?.rating <= problemRatingRange[1]
+        )
+      );
   }, [problemRatingRange, problemSet]);
+
+  useEffect(() => {
+    dispatch(setTotalFilteredProblems(filteredProblemSetAll?.length));
+  }, [filteredProblemSetAll]);
 
   useEffect(() => {
     setFilteredProblemSet(
@@ -216,32 +223,37 @@ export const ProblemTable = () => {
   return (
     <Box height={"full"} overflowX={"hidden"} overflowY={"scroll"} pr={"0"}>
       {isProblemSet === Loading.SUCCEEDED && (
-        <Table
-          colorScheme="problemTable"
-          size={"lg"}
-          style={{ borderCollapse: "collapse" }}
-        >
-          <Thead>
-            <Tr>
-              {["Id", "Problem Name", "Rating", "Solved", ""].map(
-                (title, index) => (
-                  <Th
-                    key={index}
-                    color={"primary.600"}
-                    fontSize={"xl"}
-                    textTransform={"capitalize"}
-                    textAlign={"center"}
-                    px={"8"}
-                    py={"16"}
-                  >
-                    {title}
-                  </Th>
-                )
-              )}
-            </Tr>
-          </Thead>
-          <Tbody>{renderProblems(filteredProblemSet)}</Tbody>
-        </Table>
+        <>
+          <Table
+            colorScheme="problemTable"
+            size={"lg"}
+            style={{ borderCollapse: "collapse" }}
+            mb={"36"}
+          >
+            <Thead>
+              <Tr>
+                {["Id", "Problem Name", "Rating", "Solved", ""].map(
+                  (title, index) => (
+                    <Th
+                      key={index}
+                      color={"primary.600"}
+                      fontSize={"xl"}
+                      textTransform={"capitalize"}
+                      textAlign={"center"}
+                      px={"8"}
+                      py={"16"}
+                    >
+                      {title}
+                    </Th>
+                  )
+                )}
+              </Tr>
+            </Thead>
+            <Tbody>{renderProblems(filteredProblemSet)}</Tbody>
+          </Table>
+
+          <Pagination />
+        </>
       )}
     </Box>
   );

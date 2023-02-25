@@ -17,7 +17,7 @@ export const UserCover = () => {
   const isUserLoaded = useAppSelector((state) => state.cf.loading.user);
 
   useEffect(() => {
-    handle && dispatch(fetchUser(handle));
+    if (handle) dispatch(fetchUser(handle));
   }, [handle]);
 
   useEffect(() => {

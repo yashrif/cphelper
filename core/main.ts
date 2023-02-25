@@ -21,9 +21,23 @@ const createMainWindow = () => {
     },
   });
 
-  isDev
-    ? mainWindow.loadURL("http://localhost:5173/#/problemset")
-    : mainWindow.loadFile(path.join(__dirname, "index.html"));
+  prisma.settings
+    .findUnique({
+      where: { id: 1 },
+      select: {
+        handle: true,
+      },
+    })
+    .then((data) => {
+      if (data && data?.handle?.length > 0)
+        isDev
+          ? mainWindow.loadURL("http://localhost:5173/")
+          : mainWindow.loadFile(path.join(__dirname, "index.html"));
+      else
+        isDev
+          ? mainWindow.loadURL("http://localhost:5173/#/welcome")
+          : mainWindow.loadFile(path.join(__dirname, "index.html"));
+    });
 };
 
 app.whenReady().then(() => {

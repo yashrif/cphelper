@@ -27,14 +27,16 @@ export const BlobAnimation = () => {
   } as React.CSSProperties;
 
   useEffect(() => {
-    kute
-      .fromTo(
-        "#blob1",
-        { path: "#blob1" },
-        { path: "#blob2" },
-        { repeat: 99999, duration: 1200, yoyo: true }
-      )
-      .start();
+    setTimeout(() => {
+      kute
+        .fromTo(
+          "#blob1",
+          { path: "#blob1" },
+          { path: "#blob2" },
+          { repeat: 99999, duration: 1200, yoyo: true }
+        )
+        .start();
+    }, 10);
   }, []);
 
   useEffect(() => {
