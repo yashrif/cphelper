@@ -4,9 +4,8 @@ import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import installExtension, { REDUX_DEVTOOLS } from "electron-devtools-installer";
 
-import "./ipcLoad";
-import "./ipcStore";
-import "./ipcDelete";
+import "./lib/processes";
+import { loadHandle } from "./lib/dbLoad";
 
 const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
@@ -31,9 +30,16 @@ const createWindow = (): void => {
     return { action: "deny" };
   });
 
-  if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
-    mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);
-  } else mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
+  loadHandle().then((handle) => {
+    if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
+      handle && handle.length > 0
+        ? mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"])
+        : mainWindow.loadURL(`${process.env["ELECTRON_RENDERER_URL"]}/#/welcome`);
+    } else
+      handle && handle.length > 0
+        ? mainWindow.loadFile(join(__dirname, "../renderer/index.html"))
+        : mainWindow.loadURL(`file://${__dirname}/renderer/index.html#/welcome`);
+  });
 
   /* -----------------------------Adding redux dev tool ----------------------------- */
 

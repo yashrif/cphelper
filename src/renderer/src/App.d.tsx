@@ -1,19 +1,15 @@
-import { ProblemRating, Problem } from "./common/types";
+import { ProblemRating, Problem, ProblemShort } from "./common/types";
 
 export interface Cf {
   /* ---------------------------------- Store --------------------------------- */
 
-  storeProblemTags: (problemTags: string[]) => Promise<void>;
+  storeProblemTags: (problemTags: string[]) => Promise<string[]>;
 
-  storeProblemRating: (problemRating: ProblemRating) => Promise<void>;
+  storeProblemRating: (problemRating: ProblemRating) => Promise<ProblemRating>;
 
-  storeProblem: (problem: Problem) => Promise<void>;
+  storeProblem: (problem: ProblemShort) => Promise<ProblemShort>;
 
-  storeHandle: (handle: string) => Promise<void>;
-
-  /* --------------------------------- Delete --------------------------------- */
-
-  deleteProblem: (problem: Problem) => Promise<void>;
+  storeHandle: (handle: string) => Promise<string>;
 
   /* ---------------------------------- Load ---------------------------------- */
 
@@ -21,9 +17,13 @@ export interface Cf {
 
   loadProblemRating: () => Promise<ProblemRating | null>;
 
-  loadProblems: () => Promise<Problem[] | null>;
+  loadProblems: () => Promise<ProblemShort[] | null>;
 
   loadHandle: () => Promise<string | null>;
+
+  /* --------------------------------- Delete --------------------------------- */
+
+  deleteProblem: (problem: Problem) => Promise<ProblemShort>;
 }
 
 declare global {

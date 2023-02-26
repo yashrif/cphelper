@@ -2,7 +2,7 @@ export enum Loading {
   "IDLE",
   "PENDING",
   "SUCCEEDED",
-  "FAILED",
+  "FAILED"
 }
 
 export interface Problem {
@@ -13,6 +13,14 @@ export interface Problem {
   solvedCount: number;
   tags: string[];
   type: string;
+}
+
+export interface ProblemShort {
+  contestId: number;
+  index: string;
+  name: string;
+  rating: number;
+  solvedCount: number;
 }
 
 export interface ProblemRating {
@@ -64,7 +72,7 @@ export enum Verdict {
   "CHALLENGED",
   "SKIPPED",
   "TESTING",
-  "REJECTED",
+  "REJECTED"
 }
 
 export type ColorArray = [number, number, number];

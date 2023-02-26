@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { Problem, ProblemRating } from "../../../common/types";
+import { Problem, ProblemRating, ProblemShort } from "../../../common/types";
 
 /* -------------------------------------------------------------------------- */
 /*                               Store & Delete                               */
@@ -22,9 +22,8 @@ export const storeProblemRating = createAsyncThunk(
 
 /* ------------------------------ Store problem ----------------------------- */
 
-export const storeProblem = createAsyncThunk(
-  "cf/storeProblem",
-  async (problem: Problem) => await window.cf.storeProblem(problem)
+export const storeProblem = createAsyncThunk("cf/storeProblem", async (problem: Problem) =>
+  await window.cf.storeProblem(problem as ProblemShort)
 );
 
 /* ----------------------------- Delete problem ----------------------------- */

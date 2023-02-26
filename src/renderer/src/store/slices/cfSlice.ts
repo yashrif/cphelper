@@ -1,13 +1,20 @@
 import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
 import _ from "lodash";
 
-import { Loading, Problem, ProblemRating, Submission, User } from "../../common/types";
+import {
+  Loading,
+  Problem,
+  ProblemRating,
+  ProblemShort,
+  Submission,
+  User
+} from "../../common/types";
 import * as cf from "../actions/cf/cfActions";
 
 /* ------------------------------- Interfaces ------------------------------- */
 
 interface ProblemsFetchState {
-  addedProblems: Problem[];
+  addedProblems: ProblemShort[];
   loading: {
     addedProblems: {
       load: Loading;
@@ -91,8 +98,8 @@ const problemSlice = createSlice({
             index: action.payload.index
           })
         )
-          state.addedProblems.push(action.payload);
-      } else state.addedProblems = [action.payload];
+          state.addedProblems.push(action.payload as ProblemShort);
+      } else state.addedProblems = [action.payload as ProblemShort];
     },
 
     deleteProblem: (state, action: PayloadAction<Problem>) => {
@@ -277,7 +284,7 @@ const problemSlice = createSlice({
 
     builder.addCase(cf.loadProblemRating.fulfilled, (state, action) => {
       state.loading.problemRating.load = Loading.SUCCEEDED;
-      state.problemRating = action.payload ?? { min: 0, max: 0 };
+      state.problemRating = action.payload ?? { min: 800, max: 3500 };
     });
 
     builder.addCase(cf.loadProblemRating.rejected, (state) => {

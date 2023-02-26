@@ -1,22 +1,21 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
 
-import { Problem, ProblemRating } from "../renderer/src/common/types";
+import { Problem, ProblemRating, ProblemShort } from "../renderer/src/common/types";
 
 const cf = {
-  /* ----------------------------- Store & Delete ----------------------------- */
+  /* ---------------------------------- Store --------------------------------- */
 
-  storeProblemTags: (tags: string[]): Promise<void> =>
+  storeProblemTags: (tags: string[]): Promise<string[]> =>
     ipcRenderer.invoke("STORE_PROBLEM_TAGS", tags),
 
-  storeProblemRating: (problemRating: ProblemRating): Promise<void> =>
+  storeProblemRating: (problemRating: ProblemRating): Promise<ProblemRating> =>
     ipcRenderer.invoke("STORE_PROBLEM_RATING", problemRating),
 
-  storeProblem: (problem: Problem): Promise<void> => ipcRenderer.invoke("STORE_PROBLEM", problem),
+  storeProblem: (problem: ProblemShort): Promise<ProblemShort> =>
+    ipcRenderer.invoke("STORE_PROBLEM", problem),
 
-  deleteProblem: (problem: Problem): Promise<void> => ipcRenderer.invoke("DELETE_PROBLEM", problem),
-
-  storeHandle: (handle: string): Promise<void> => ipcRenderer.invoke("STORE_HANDLE", handle),
+  storeHandle: (handle: string): Promise<string> => ipcRenderer.invoke("STORE_HANDLE", handle),
 
   /* ---------------------------------- Load ---------------------------------- */
 
@@ -24,9 +23,14 @@ const cf = {
 
   loadProblemRating: (): Promise<ProblemRating | null> => ipcRenderer.invoke("LOAD_PROBLEM_RATING"),
 
-  loadProblems: (): Promise<Problem[] | null> => ipcRenderer.invoke("LOAD_PROBLEMS"),
+  loadProblems: (): Promise<ProblemShort[] | null> => ipcRenderer.invoke("LOAD_PROBLEMS"),
 
-  loadHandle: (): Promise<string | null> => ipcRenderer.invoke("LOAD_HANDLE")
+  loadHandle: (): Promise<string | null> => ipcRenderer.invoke("LOAD_HANDLE"),
+
+  /* --------------------------------- Delete --------------------------------- */
+
+  deleteProblem: (problem: Problem): Promise<ProblemShort> =>
+    ipcRenderer.invoke("DELETE_PROBLEM", problem)
 };
 
 if (process.contextIsolated) {
