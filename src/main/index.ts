@@ -16,6 +16,7 @@ const createWindow = (): void => {
     autoHideMenuBar: true,
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
+      webviewTag: true,
       preload: join(__dirname, "../preload/index.js"),
       sandbox: false
     }
@@ -31,14 +32,15 @@ const createWindow = (): void => {
   });
 
   loadHandle().then((handle) => {
-    if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
-      handle && handle.length > 0
-        ? mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"])
-        : mainWindow.loadURL(`${process.env["ELECTRON_RENDERER_URL"]}/#/welcome`);
-    } else
-      handle && handle.length > 0
-        ? mainWindow.loadFile(join(__dirname, "../renderer/index.html"))
-        : mainWindow.loadURL(`file://${__dirname}/renderer/index.html#/welcome`);
+    mainWindow.loadURL(
+      is.dev && process.env["ELECTRON_RENDERER_URL"]
+        ? handle && handle.length > 0
+          ? process.env["ELECTRON_RENDERER_URL"]
+          : `${process.env["ELECTRON_RENDERER_URL"]}/#/welcome`
+        : handle && handle.length > 0
+        ? `file://${__dirname}/../renderer/index.html`
+        : `file://${__dirname}/../renderer/index.html#/welcome`
+    );
   });
 
   /* -----------------------------Adding redux dev tool ----------------------------- */
@@ -57,9 +59,6 @@ const createWindow = (): void => {
 app.whenReady().then(() => {
   electronApp.setAppUserModelId("com.cphelper");
 
-  // Default open or close DevTools by F12 in development
-  // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
   });
