@@ -1,11 +1,11 @@
-import { configureStore, Store } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 // import reduxLogger from "redux-logger";
 
 import cfSlice from "./slices/cfSlice";
 import preferencesSlice from "./slices/settingsSlice";
 import componentSlice from "./slices/utilsSlice";
 
-export const store: Store = configureStore({
+export const store = configureStore({
   reducer: {
     cf: cfSlice,
     utils: componentSlice,

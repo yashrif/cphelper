@@ -13,7 +13,7 @@ import * as cf from "../actions/cf/cfActions";
 
 /* ------------------------------- Interfaces ------------------------------- */
 
-interface ProblemsFetchState {
+export interface ProblemsFetchState {
   addedProblems: ProblemShort[];
   loading: {
     addedProblems: {

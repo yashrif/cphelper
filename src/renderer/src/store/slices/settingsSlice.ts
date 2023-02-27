@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { Loading } from "../../common/types";
 
-interface settings {
+export interface settings {
   handle: string | null;
   loading: {
     handle: {
