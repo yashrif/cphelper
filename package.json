@@ -64,17 +64,5 @@
     "redux-logger": "^3.0.6",
     "typescript": "^4.9.4",
     "vite": "^4.0.4"
-  },
-  "build": {
-    "appId": "com.yashrif.cphelper",
-    "productName": "CPHelper 1.0.0",
-    "extraResources": [
-      "prisma/**/*",
-      "node_modules/.prisma/**/*",
-      "node_modules/@prisma/client/**/*"
-    ],
-    "extraMetadata": {
-      "main": "out/main/index.js"
-    }
   }
 }

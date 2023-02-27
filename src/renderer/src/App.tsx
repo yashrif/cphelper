@@ -3,7 +3,7 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 import { Grid } from "@chakra-ui/react";
 
 import { Home } from "./components/home";
-import { Welcome } from "./components/welcome";
+import { GettingStarted } from "./components/gettingStarted";
 import { SideBar } from "./components/reusable/SideBar";
 import { ProblemSet } from "./components/problemSet";
 import { Problem } from "./components/problem/Problem";
@@ -24,7 +24,7 @@ export const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Home />} />
-          <Route path="welcome" element={<Welcome />} />
+          <Route path="/gettingstarted" element={<GettingStarted />} />
           <Route path="/problemset" element={<ProblemSet />} />
           <Route path="/problemset/problem/:id/:index" element={<Problem />} />
         </Routes>

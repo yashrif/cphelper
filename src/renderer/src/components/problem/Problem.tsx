@@ -20,7 +20,7 @@ export const Problem = () => {
 
     refSubmit?.current?.addEventListener("dom-ready", () => {
       refSubmit?.current?.insertCSS(style);
-      refSubmit?.current?.insertCSS(style);
+      refSubmit?.current?.insertCSS(`#header{ display: none !important }`);
     });
   }, []);
 

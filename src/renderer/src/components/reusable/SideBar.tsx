@@ -115,7 +115,9 @@ export const SideBar = () => {
       </style>
 
       <Center
-        display={location.pathname === "/welcome" ? "none" : "block"}
+        display={
+          location.pathname === "/gettingstarted" || location.pathname === "/welcome" ? "none" : "block"
+        }
         boxShadow={"0.2rem 0 3.6rem rgba(28, 126, 214, .08)"}
         className="dashboard-navbar"
         h={"full"}

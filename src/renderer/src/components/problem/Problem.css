@@ -6,7 +6,6 @@ body {
     padding: 0 1.6rem;
 }
 
-#header,
 #sidebar,
 #footer,
 .menu-box,
@@ -15,9 +14,28 @@ body {
     display: none;
 }
 
+#header {
+    padding-top: 2.4rem;
+}
+
+#header div:first-child {
+    display: none;
+}
+
+.lang-chooser a {
+    color: #555 !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+}
+
+.lang-chooser a:hover {
+    color: #1c7ed6 !important;
+}
+
 .ttypography {
     padding-top: 0;
 }
+
 
 #pageContent {
     padding-top: 0 !important;

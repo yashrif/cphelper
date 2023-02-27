@@ -1,23 +1,37 @@
 appId: com.yashrif.cphelper
 productName: CPHelper 1.0.0
+
 directories:
   buildResources: build
+
 files:
   - "!**/.vscode/*"
   - "!src/*"
   - "!electron.vite.config.{js,ts,mjs,cjs}"
   - "!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}"
   - "!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}"
+
+extraResources:
+  - "prisma/**/*"
+  - "node_modules/.prisma/**/*"
+  - "node_modules/@prisma/client/**/*"
+
+extraMetadata:
+  main: "./out/main/index.js"
+
 asarUnpack:
   - resources/*
-afterSign: build/notarize.js
+# afterSign: build/notarize.js
+
 win:
   executableName: cphelper
+
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
@@ -25,8 +39,10 @@ mac:
     - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+
 dmg:
   artifactName: ${name}-${version}.${ext}
+
 linux:
   target:
     - AppImage
@@ -34,9 +50,16 @@ linux:
     - deb
   maintainer: electronjs.org
   category: Utility
+
 appImage:
   artifactName: ${name}-${version}.${ext}
+
 npmRebuild: false
+
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  provider: "github"
+  owner: "Yashrif"
+  private: true
+  repo: "cphelper"
+  # token:
+  # url: "https://example.com/auto-updates"

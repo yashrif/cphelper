@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Box, Button, Grid, GridItem, Text } from "@chakra-ui/react";
 import kute from "kute.js";
 import { useNavigate } from "react-router-dom";
+import { IoChevronForwardOutline } from "react-icons/io5";
 
 import { Handle } from "./Handle";
 import { ProblemRating } from "./ProblemRating";
@@ -10,7 +11,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { Loading } from "../../common/types";
 import { storeHandle } from "../../store/slices/settingsSlice";
 
-export const Welcome = () => {
+export const GettingStarted = () => {
   const navigate = useNavigate();
 
   const dispatch: any = useAppDispatch();
@@ -136,13 +137,9 @@ export const Welcome = () => {
 
           <GridItem colSpan={2} justifySelf={"center"}>
             <Button
-              px={"28"}
-              py={"18"}
-              fontSize={"xl"}
-              color={"font.light"}
-              fontWeight={"medium"}
+              boxSize={"4.4rem"}
               alignSelf={"center"}
-              borderRadius={".7rem"}
+              borderRadius={"full"}
               loadingText="Redirecting"
               backgroundColor={"primary.500"}
               variant="solid"
@@ -156,7 +153,7 @@ export const Welcome = () => {
                 }
               }}
             >
-              Done
+              <IoChevronForwardOutline color={"#fff"} size={"2.8rem"} />
             </Button>
           </GridItem>
         </Grid>

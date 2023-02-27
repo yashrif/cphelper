@@ -36,10 +36,10 @@ const createWindow = (): void => {
       is.dev && process.env["ELECTRON_RENDERER_URL"]
         ? handle && handle.length > 0
           ? process.env["ELECTRON_RENDERER_URL"]
-          : `${process.env["ELECTRON_RENDERER_URL"]}/#/welcome`
+          : `${process.env["ELECTRON_RENDERER_URL"]}/#/gettingstarted`
         : handle && handle.length > 0
         ? `file://${__dirname}/../renderer/index.html`
-        : `file://${__dirname}/../renderer/index.html#/welcome`
+        : `file://${__dirname}/../renderer/index.html#/gettingstarted`
     );
   });
 
