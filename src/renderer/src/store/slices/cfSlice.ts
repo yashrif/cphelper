@@ -102,7 +102,7 @@ const problemSlice = createSlice({
       } else state.addedProblems = [action.payload as ProblemShort];
     },
 
-    deleteProblem: (state, action: PayloadAction<Problem>) => {
+    deleteProblem: (state, action: PayloadAction<ProblemShort>) => {
       state.addedProblems = current(state.addedProblems).filter((problem) => {
         return !(
           problem.contestId === action.payload.contestId && problem.index === action.payload.index

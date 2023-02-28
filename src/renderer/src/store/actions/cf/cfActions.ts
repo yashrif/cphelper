@@ -5,7 +5,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { RootState } from "../../store";
 import * as cf from "./cfActions";
-import { Loading, Problem } from "../../../common/types";
+import { Loading, Problem, ProblemShort } from "../../../common/types";
 import { addProblem, deleteProblem } from "../../slices/cfSlice";
 
 /* ------------------ Update problem tags and store into db ----------------- */
@@ -49,7 +49,7 @@ export const updateAddedProblemsAndStore = createAsyncThunk(
 
 export const updateAddedProblemsAndDelete = createAsyncThunk(
   "cf/updateAddedProblemsAndDelete",
-  async (problem: Problem, { dispatch }) => {
+  async (problem: ProblemShort, { dispatch }) => {
     dispatch(deleteProblem(problem));
 
     await dispatch(cf.deleteProblem(problem));

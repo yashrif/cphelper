@@ -2,7 +2,7 @@ import { ipcMain } from "electron";
 
 import { prisma } from "./prismaClient";
 import { storeHandle, storeProblem, storeProblemRating, storeProblemTags } from "./dbStore";
-import { Problem, ProblemRating, ProblemShort } from "../../renderer/src/common/types";
+import { ProblemRating, ProblemShort } from "../../renderer/src/common/types";
 import { loadHandle, loadProblemRating, loadProblems, loadProblemTags } from "./dbLoad";
 import { deleteProblem } from "./dbDelete";
 
@@ -72,4 +72,4 @@ ipcMain.handle("LOAD_HANDLE", async () => await loadHandle());
 
 /* --------------------------------- Delete --------------------------------- */
 
-ipcMain.handle("DELETE_PROBLEM", async (_, problem: Problem) => await deleteProblem(problem));
+ipcMain.handle("DELETE_PROBLEM", async (_, problem: ProblemShort) => await deleteProblem(problem));
