@@ -3,7 +3,7 @@ import ColorThief from "color-thief-ts";
 
 import { ColorArray, Loading } from "../../common/types";
 
-interface Component {
+export interface Component {
   loading: {
     profileColorPalette: Loading;
   };
@@ -17,20 +17,14 @@ interface Component {
 
 const initialState = {
   loading: {
-    profileColorPalette: Loading.IDLE,
+    profileColorPalette: Loading.IDLE
   },
-  problemsPerPage: 20,
+  problemsPerPage: 20
 } as Component;
 
 export const generateColorPalette = createAsyncThunk(
   "utils/generateColorPalette",
-  async ({
-    url,
-    numberOfColors = 5,
-  }: {
-    url: string;
-    numberOfColors?: number;
-  }) => {
+  async ({ url, numberOfColors = 5 }: { url: string; numberOfColors?: number }) => {
     const colorThief = new ColorThief();
     return await colorThief.getPaletteAsync(url, numberOfColors);
   }
@@ -62,7 +56,7 @@ const componentSlice = createSlice({
 
     setSelectedProblemPage: (state, action: PayloadAction<number>) => {
       state.selectedProblemPage = action.payload;
-    },
+    }
   },
   extraReducers: (builder) => {
     /* ------------------------------ Color Palette ----------------------------- */
@@ -82,7 +76,7 @@ const componentSlice = createSlice({
     builder.addCase(generateColorPalette.rejected, (state) => {
       state.loading.profileColorPalette = Loading.FAILED;
     });
-  },
+  }
 });
 
 export default componentSlice.reducer;
@@ -91,5 +85,5 @@ export const {
   setProblemsPerPage,
   setTotalFilteredProblems,
   setSelectedProblemPage,
-  updateSelectedProblemTags,
+  updateSelectedProblemTags
 } = componentSlice.actions;

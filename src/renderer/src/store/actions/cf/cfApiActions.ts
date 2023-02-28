@@ -15,7 +15,7 @@ export const fetchProblemSet = createAsyncThunk(
 
     const response = (
       await apiCf.get("problemset.problems", {
-        params: params,
+        params: params
       })
     ).data.result;
 
@@ -38,12 +38,7 @@ export const fetchProblemTags = createAsyncThunk(
 
     const state = getState() as RootState;
 
-    return _.chain(state.cf.problemSet)
-      .map("tags")
-      .flatten()
-      .uniq()
-      .sort()
-      .value();
+    return _.chain(state.cf.problemSet).map("tags").flatten().uniq().sort().value();
   }
 );
 
@@ -60,7 +55,7 @@ export const fetchProblemRating = createAsyncThunk(
 
     return {
       max: _.max(ratings) as number,
-      min: _.min(ratings) as number,
+      min: _.min(ratings) as number
     };
   }
 );
@@ -73,8 +68,8 @@ export const fetchUser = createAsyncThunk(
     (
       await apiCf.get("user.info", {
         params: {
-          handles: handle,
-        },
+          handles: handle
+        }
       })
     ).data.result[0]
 );
@@ -87,8 +82,8 @@ export const fetchUserRatingHistory = createAsyncThunk(
     (
       await apiCf.get("https://codeforces.com/api/user.rating", {
         params: {
-          handle: handle,
-        },
+          handle: handle
+        }
       })
     ).data.result
 );
@@ -97,7 +92,7 @@ export const fetchUserRatingHistory = createAsyncThunk(
 
 export const fetchUserStatus = createAsyncThunk(
   "cf/fetchUserStatus",
-  async (handle: string) => {
+  async (handle: string): Promise<Submission[]> => {
     let response: Submission[] = [];
 
     try {
@@ -105,9 +100,8 @@ export const fetchUserStatus = createAsyncThunk(
         await apiCf.get("https://codeforces.com/api/user.status", {
           params: {
             handle: handle,
-            from: 1,
-            count: 5,
-          },
+            from: 1
+          }
         })
       ).data.result as Submission[];
     } catch (error) {
@@ -118,8 +112,8 @@ export const fetchUserStatus = createAsyncThunk(
               params: {
                 handle: handle,
                 from: 1,
-                count: 5,
-              },
+                count: 5
+              }
             })
           ).data.result as Submission[];
       } else {
@@ -127,15 +121,7 @@ export const fetchUserStatus = createAsyncThunk(
       }
     }
 
-    return response.map((e) =>
-      _.pick(e, [
-        "id",
-        "problem",
-        "verdict",
-        "creationTimeSeconds",
-        "programmingLanguage",
-      ])
-    );
+    return response as Submission[];
   }
 );
 
@@ -149,11 +135,9 @@ export const fetchUserRatingHistoryAndStatus = createAsyncThunk(
     await dispatch(fetchUserStatus(handle));
 
     const state = getState() as RootState;
-    if (state.cf.loading.user === Loading.FAILED)
-      await dispatch(fetchUser(handle));
+    if (state.cf.loading.user === Loading.FAILED) await dispatch(fetchUser(handle));
     if (state.cf.loading.userRatingHistory === Loading.FAILED)
       await dispatch(fetchUserRatingHistory(handle));
-    if (state.cf.loading.userStatus === Loading.FAILED)
-      await dispatch(fetchUserStatus(handle));
+    if (state.cf.loading.userStatus === Loading.FAILED) await dispatch(fetchUserStatus(handle));
   }
 );

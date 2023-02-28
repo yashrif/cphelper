@@ -1,4 +1,4 @@
-import { ProblemRating, Problem, ProblemShort } from "./common/types";
+import { ProblemRating, ProblemShort } from "./common/types";
 
 export interface Cf {
   /* ---------------------------------- Store --------------------------------- */
@@ -23,7 +23,7 @@ export interface Cf {
 
   /* --------------------------------- Delete --------------------------------- */
 
-  deleteProblem: (problem: Problem) => Promise<ProblemShort>;
+  deleteProblem: (problem: ProblemShort) => Promise<ProblemShort>;
 }
 
 declare global {

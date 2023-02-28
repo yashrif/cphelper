@@ -61,5 +61,4 @@ publish:
   owner: "Yashrif"
   private: true
   repo: "cphelper"
-  # token:
-  # url: "https://example.com/auto-updates"
+  releaseType: "draft"

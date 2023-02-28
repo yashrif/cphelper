@@ -30,7 +30,7 @@ export const storeProblem = createAsyncThunk("cf/storeProblem", async (problem: 
 
 export const deleteProblem = createAsyncThunk(
   "cf/deleteProblem",
-  async (problem: Problem) => await window.cf.deleteProblem(problem)
+  async (problem: ProblemShort) => await window.cf.deleteProblem(problem)
 );
 
 /* -------------------------------------------------------------------------- */
