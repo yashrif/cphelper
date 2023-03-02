@@ -7,6 +7,7 @@ export interface Component {
   loading: {
     profileColorPalette: Loading;
   };
+  updatedHandle: string | null;
   problemRatingRange: [number, number];
   problemsPerPage: number;
   profileColorPalette: ColorArray[];
@@ -38,6 +39,10 @@ const componentSlice = createSlice({
   name: "utils",
   initialState,
   reducers: {
+    setUpdatedHandle: (state, action: PayloadAction<string | null>) => {
+      state.updatedHandle = action.payload;
+    },
+
     updateSelectedProblemTags: (state, action: PayloadAction<string[]>) => {
       state.selectedProblemTags = action.payload;
     },
@@ -81,6 +86,7 @@ const componentSlice = createSlice({
 
 export default componentSlice.reducer;
 export const {
+  setUpdatedHandle,
   setProblemRatingRange,
   setProblemsPerPage,
   setTotalFilteredProblems,

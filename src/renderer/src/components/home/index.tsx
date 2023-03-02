@@ -3,7 +3,7 @@ import { Box, Grid } from "@chakra-ui/react";
 import { WaveAnimation } from "./WaveAnimation";
 import { RightPanel } from "./RightPanel";
 import { RatingCurve } from "./RatingCurve";
-import { UserCover } from "./UserImage";
+import { User } from "./User";
 
 export const Home = () => {
   return (
@@ -19,7 +19,7 @@ export const Home = () => {
       <Box w={"full"} overflowY={"scroll"} px={"16"} py={"36"}>
         <WaveAnimation />
 
-        <UserCover />
+        <User />
 
         <RatingCurve />
       </Box>

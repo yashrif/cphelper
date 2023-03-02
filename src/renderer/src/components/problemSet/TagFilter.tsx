@@ -10,7 +10,7 @@ export const TagFilter = () => {
   const [customizedTags, setCustomizedTags] = useState(Object);
   const [selectedTags, setSelectedTags] = useState({});
 
-  const dispatch: any = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const problemTags = useAppSelector((state) => state.cf.problemTags);
 

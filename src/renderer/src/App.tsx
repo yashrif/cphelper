@@ -7,11 +7,12 @@ import { GettingStarted } from "./components/gettingStarted";
 import { SideBar } from "./components/reusable/SideBar";
 import { ProblemSet } from "./components/problemSet";
 import { Problem } from "./components/problem/Problem";
+import { Settings } from "./components/settings";
 import { useAppDispatch } from "./hooks/hooks";
 import { loadHandle } from "./store/slices/settingsSlice";
 
 export const App = () => {
-  const dispatch: any = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(loadHandle());
@@ -27,6 +28,7 @@ export const App = () => {
           <Route path="/gettingstarted" element={<GettingStarted />} />
           <Route path="/problemset" element={<ProblemSet />} />
           <Route path="/problemset/problem/:id/:index" element={<Problem />} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </HashRouter>
     </Grid>

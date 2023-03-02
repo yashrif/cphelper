@@ -19,7 +19,7 @@ export const SideBar = () => {
 
   const [isCollectionExpanded, setIsCollectionExpanded] = useState(false);
 
-  const dispatch: any = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const addedProblems = useAppSelector((state) => state.cf.addedProblems);
 
@@ -116,7 +116,9 @@ export const SideBar = () => {
 
       <Center
         display={
-          location.pathname === "/gettingstarted" || location.pathname === "/welcome" ? "none" : "block"
+          location.pathname === "/gettingstarted" || location.pathname === "/welcome"
+            ? "none"
+            : "block"
         }
         boxShadow={"0.2rem 0 3.6rem rgba(28, 126, 214, .08)"}
         className="dashboard-navbar"

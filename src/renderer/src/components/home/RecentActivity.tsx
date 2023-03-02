@@ -10,9 +10,9 @@ import { Loading, Submission, Verdict } from "../../common/types";
 import { fetchUserStatus } from "../../store/actions/cf/cfApiActions";
 
 export const RecentActivity = () => {
-  const NUMBER_OF_ACTIVITY = 8;
+  const NUMBER_OF_ACTIVITIES = 8;
 
-  const dispatch: any = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const handle = useAppSelector((state) => state.settings.handle);
   const userStatus = useAppSelector((state) => state.cf.userStatus);
@@ -54,7 +54,7 @@ export const RecentActivity = () => {
   };
 
   const renderActivityList = (activities: Submission[]) => {
-    return activities.map((activity) => (
+    return activities?.map((activity) => (
       <Flex
         boxShadow={"0 0 1.2rem rgba(28, 126, 214, 0.1)"}
         borderRadius={"md"}
@@ -66,8 +66,8 @@ export const RecentActivity = () => {
       >
         <Box>
           <Text fontSize={"lg"} fontWeight={"medium"} lineHeight={"tall"}>
-            {activity.problem.name.slice(0, 20)}
-            {activity.problem.name.length > 20 ? "..." : null}
+            {activity.problem.name?.slice(0, 20)}
+            {activity.problem.name?.length > 20 ? "..." : null}
           </Text>
           <Flex gap={"4"} alignItems={"center"}>
             <IoTimerOutline color={"#fd7e14"} size={"1.2rem"} />
@@ -94,8 +94,8 @@ export const RecentActivity = () => {
 
       <Stack gap={"0.4rem"}>
         {isUserStatusLoaded === Loading.SUCCEEDED
-          ? renderActivityList(userStatus.slice(0, NUMBER_OF_ACTIVITY))
-          : renderSkeleton(5)}
+          ? renderActivityList(userStatus?.slice(0, NUMBER_OF_ACTIVITIES))
+          : renderSkeleton(NUMBER_OF_ACTIVITIES)}
       </Stack>
     </Box>
   );
