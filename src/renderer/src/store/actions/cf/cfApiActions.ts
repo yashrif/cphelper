@@ -111,8 +111,7 @@ export const fetchUserStatus = createAsyncThunk(
             await apiCf.get("https://codeforces.com/api/user.status", {
               params: {
                 handle: handle,
-                from: 1,
-                count: 5
+                from: 1
               }
             })
           ).data.result as Submission[];

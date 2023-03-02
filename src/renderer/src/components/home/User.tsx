@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Box, Flex, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Image, Text, VStack } from "@chakra-ui/react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -9,8 +9,8 @@ import { BlobAnimation } from "./BlobAnimation";
 import { generateColorPalette } from "../../store/slices/utilsSlice";
 import { Loading } from "../../common/types";
 
-export const UserCover = () => {
-  const dispatch: any = useAppDispatch();
+export const User = () => {
+  const dispatch = useAppDispatch();
 
   const handle = useAppSelector((state) => state.settings.handle);
   const user = useAppSelector((state) => state.cf.user);
@@ -50,18 +50,29 @@ export const UserCover = () => {
       </Box>
 
       <Box py={"8"} fontWeight={"semibold"} lineHeight={"short"}>
-        <Text fontSize={"2xl"} textTransform={"capitalize"}>
-          {user?.firstName} {user?.lastName}
-        </Text>
+        {isUserLoaded === Loading.SUCCEEDED ? (
+          <>
+            <Text fontSize={"2xl"} textTransform={"capitalize"}>
+              {`${
+                user?.firstName && user?.lastName ? `${user?.firstName} ${user?.lastName}` : handle
+              }`}
+            </Text>
 
-        <Text
-          fontSize={"lg"}
-          color={"font.muted2"}
-          fontWeight={"normal"}
-          textTransform={"capitalize"}
-        >
-          {user?.rank}
-        </Text>
+            <Text
+              fontSize={"lg"}
+              color={"font.muted2"}
+              fontWeight={"normal"}
+              textTransform={"capitalize"}
+            >
+              {user?.rank}
+            </Text>
+          </>
+        ) : (
+          <VStack gap={"4"} ml={"-1.6rem"}>
+            <Skeleton height={"2.4rem"} width={"16rem"} baseColor={"#dbedff"} />
+            <Skeleton height={"1.8rem"} width={"16rem"} baseColor={"#dbedff"} />
+          </VStack>
+        )}
       </Box>
     </Flex>
   );

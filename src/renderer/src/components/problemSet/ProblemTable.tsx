@@ -36,7 +36,7 @@ export const ProblemTable = () => {
   const [filteredProblemSet, setFilteredProblemSet] = useState<Problem[]>([]);
   // const [problemSetIndexStart, setProblemSetIndexStart] = useState(0);
 
-  const dispatch: any = useAppDispatch();
+  const dispatch = useAppDispatch();
   const selectedProblemTags = useAppSelector((state) => state.utils.selectedProblemTags);
   const problemSet = useAppSelector((state) => state.cf.problemSet);
   const isProblemSet = useAppSelector((state) => state.cf.loading.problemSet);

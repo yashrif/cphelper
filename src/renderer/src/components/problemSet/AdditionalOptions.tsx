@@ -29,7 +29,7 @@ export const AdditionalOptions = () => {
         </Text>
 
         <NumberInput
-          size={"lg"}
+          size={"md"}
           borderColor={"primary.400"}
           step={5}
           allowMouseWheel

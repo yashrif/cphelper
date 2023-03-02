@@ -15,7 +15,7 @@ export const RatingCurve = () => {
   const [isShowGraph, setIsShowGraph] = useState(false);
   // const [isShowDots, setIsShowDots] = useState(false);
 
-  const dispatch: any = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const handle = useAppSelector((state) => state.settings.handle);
   const userRatingHistory = useAppSelector((state) => state.cf.userRatingHistory);

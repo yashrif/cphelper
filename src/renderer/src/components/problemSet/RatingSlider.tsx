@@ -20,7 +20,7 @@ import { loadProblemRating } from "../../store/actions/cf/cfDbActions";
 export const RatingSlider = () => {
   const [ratingRange, setRatingRange] = useState([800, 3500]);
 
-  const dispatch: any = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const problemRating = useAppSelector((state) => state.cf.problemRating);
 

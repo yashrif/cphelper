@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
-import { Box, InputGroup, InputRightElement, Select, Spinner, Text } from "@chakra-ui/react";
+import { Box, Flex, InputGroup, InputRightElement, Select, Spinner, Text } from "@chakra-ui/react";
 import _ from "lodash";
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { IoSyncOutline } from "react-icons/io5";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { updateProblemTagsAndStore } from "../../store/actions/cf/cfActions";
-import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { Loading } from "@renderer/common/types";
 
 export const ProblemTags = () => {
   const [isCheckmark, setIsCheckmark] = useState(true);
 
-  const dispatch: any = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const problemTags = useAppSelector((state) => state.cf.problemTags);
+  const isProblemTagsFetched = useAppSelector((state) => state.cf.loading.problemTags.fetch);
 
   useEffect(() => {
     dispatch(updateProblemTagsAndStore());
@@ -19,13 +22,16 @@ export const ProblemTags = () => {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (problemTags)
+
+    if (isProblemTagsFetched === Loading.SUCCEEDED) {
+      setIsCheckmark(true);
       timer = setTimeout(() => {
         setIsCheckmark(false);
       }, 1500);
+    }
 
     return () => clearTimeout(timer);
-  }, [problemTags]);
+  }, [isProblemTagsFetched]);
 
   return (
     <>
@@ -33,42 +39,57 @@ export const ProblemTags = () => {
         Problem Tags:
       </Text>
 
-      <InputGroup w={"3xs"}>
-        <InputRightElement pointerEvents="none" mx={"8"} my={"2px"}>
-          {!problemTags ? (
-            <Spinner
-              thickness="3px"
-              speed="0.65s"
-              emptyColor="gray.200"
-              color="primary.500"
-              size="lg"
-            />
-          ) : (
-            <Box transition={"all .3s"} opacity={isCheckmark ? 1 : 0}>
-              <IoMdCheckmarkCircleOutline color="#37b24d" size={"2.4rem"} />
-            </Box>
-          )}
-        </InputRightElement>
+      <Flex alignItems={"center"} gap={"16"}>
+        <InputGroup w={"3xs"}>
+          <InputRightElement pointerEvents="none" mx={"8"} my={"2px"}>
+            {isProblemTagsFetched === Loading.PENDING ? (
+              <Spinner
+                thickness="3px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="primary.500"
+                size="lg"
+              />
+            ) : (
+              <Box transition={"all .3s"} opacity={isCheckmark ? 1 : 0}>
+                <IoMdCheckmarkCircleOutline color="#37b24d" size={"2.4rem"} />
+              </Box>
+            )}
+          </InputRightElement>
 
-        <Select
-          transition={"all .3s"}
-          iconColor={isCheckmark ? "transparent" : "font.general"}
-          isReadOnly={true}
-          placeholder="Tags"
-          _placeholder={{
-            color: "font.muted3"
+          <Select
+            transition={"all .3s"}
+            iconColor={
+              isCheckmark || isProblemTagsFetched === Loading.PENDING
+                ? "transparent"
+                : "font.general"
+            }
+            isReadOnly={true}
+            placeholder="Tags"
+            _placeholder={{
+              color: "font.muted3"
+            }}
+            size={"lg"}
+            borderColor={"primary.400"}
+            w={"3xs"}
+          >
+            {problemTags?.map((tag) => (
+              <option key={tag} value={tag}>
+                {_.capitalize(tag)}
+              </option>
+            ))}
+          </Select>
+        </InputGroup>
+
+        <Box
+          cursor={"pointer"}
+          onClick={() => {
+            dispatch(updateProblemTagsAndStore());
           }}
-          size={"lg"}
-          borderColor={"primary.400"}
-          w={"3xs"}
         >
-          {problemTags?.map((tag) => (
-            <option key={tag} value={tag}>
-              {_.capitalize(tag)}
-            </option>
-          ))}
-        </Select>
-      </InputGroup>
+          <IoSyncOutline color="#1c7ed6" size={"2.4rem"} />
+        </Box>
+      </Flex>
     </>
   );
 };
