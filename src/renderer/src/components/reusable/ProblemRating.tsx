@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
-import { Box, Flex, Input, InputGroup, InputRightElement, Spinner, Text } from "@chakra-ui/react";
-import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import {
+  Box,
+  Flex,
+  Input,
+  InputGroup,
+  keyframes,
+  Text
+} from "@chakra-ui/react";
 import { IoSyncOutline } from "react-icons/io5";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
@@ -8,7 +14,7 @@ import { updateProblemRatingAndStore } from "../../store/actions/cf/cfActions";
 import { Loading } from "@renderer/common/types";
 
 export const ProblemRating = () => {
-  const [isCheckmark, setIsCheckmark] = useState(true);
+  const [isSpin, setIsSpin] = useState(true);
 
   const dispatch = useAppDispatch();
 
@@ -20,17 +26,15 @@ export const ProblemRating = () => {
   }, []);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-
-    if (isProblemRatingFetched === Loading.SUCCEEDED) {
-      setIsCheckmark(true);
-      timer = setTimeout(() => {
-        setIsCheckmark(false);
-      }, 1500);
-    }
-
-    return () => clearTimeout(timer);
+    if (isProblemRatingFetched === Loading.SUCCEEDED) setIsSpin(false);
   }, [isProblemRatingFetched]);
+
+  const spin = keyframes`
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  `;
+
+  const spinAnimation = `${spin} infinite 1s linear`;
 
   return (
     <>
@@ -40,21 +44,6 @@ export const ProblemRating = () => {
 
       <Flex alignItems={"center"} gap={"16"}>
         <InputGroup w={"3xs"}>
-          <InputRightElement pointerEvents="none" mx={"8"} my={"2px"}>
-            {isProblemRatingFetched === Loading.PENDING ? (
-              <Spinner
-                thickness="3px"
-                speed="0.65s"
-                emptyColor="gray.200"
-                color="primary.500"
-                size="lg"
-              />
-            ) : (
-              <Box transition={"all .3s"} opacity={isCheckmark ? 1 : 0}>
-                <IoMdCheckmarkCircleOutline color="#37b24d" size={"2.4rem"} />
-              </Box>
-            )}
-          </InputRightElement>
           <Input
             placeholder="min - max"
             _placeholder={{
@@ -71,9 +60,11 @@ export const ProblemRating = () => {
         </InputGroup>
 
         <Box
+          animation={isSpin ? spinAnimation : ""}
           cursor={"pointer"}
           onClick={() => {
             dispatch(updateProblemRatingAndStore());
+            setIsSpin(true);
           }}
         >
           <IoSyncOutline color="#1c7ed6" size={"2.4rem"} />

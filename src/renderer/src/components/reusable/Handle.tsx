@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
-import {
-  Input,
-  Text,
-  Image,
-  GridItem,
-  Box,
-  InputGroup,
-  InputRightElement,
-  Spinner
-} from "@chakra-ui/react";
+import { Input, Text, Image, GridItem, Box, InputGroup, Flex, keyframes } from "@chakra-ui/react";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { IoCloseCircleOutline, IoSyncOutline } from "react-icons/io5";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { setUpdatedHandle } from "@renderer/store/slices/utilsSlice";
@@ -19,6 +11,7 @@ import { Loading } from "../../common/types";
 export const Handle = () => {
   const [isCheckmark, setIsCheckmark] = useState(true);
   const [firstChange, setFirstChange] = useState(false);
+  const [isInputChaging, setIsInputChaging] = useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -35,7 +28,10 @@ export const Handle = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (updatedHandle) dispatch(fetchUser(updatedHandle));
+      if (updatedHandle) {
+        dispatch(fetchUser(updatedHandle));
+        setIsInputChaging(false);
+      }
     }, 500);
 
     return () => clearTimeout(timer);
@@ -43,14 +39,23 @@ export const Handle = () => {
 
   useEffect(() => {
     if (userFetched) setIsCheckmark(true);
-    let timer: NodeJS.Timeout;
-    if (userFetched)
-      timer = setTimeout(() => {
-        setIsCheckmark(false);
-      }, 1500);
+    else if (userRejected) setIsCheckmark(false);
 
-    return () => clearTimeout(timer);
-  }, [userFetched, updatedHandle]);
+    // let timer: NodeJS.Timeout;
+    // if (userFetched)
+    //   timer = setTimeout(() => {
+    //     setIsCheckmark(false);
+    //   }, 1500);
+
+    // return () => clearTimeout(timer);
+  }, [userFetched, userRejected, updatedHandle]);
+
+  const spin = keyframes`
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  `;
+
+  const spinAnimation = `${spin} infinite 1s linear`;
 
   return (
     <>
@@ -96,9 +101,7 @@ export const Handle = () => {
               src={userPending ? "" : userPhoto}
               border={"2px solid #62b1ff"}
               borderRadius={"full"}
-              opacity={
-                userFetched && firstChange && updatedHandle && updatedHandle?.length > 0 ? 1 : 0
-              }
+              opacity={userFetched && updatedHandle && updatedHandle?.length > 0 ? 1 : 0}
             />
           )}
         </Box>
@@ -108,48 +111,51 @@ export const Handle = () => {
         User handle:
       </Text>
 
-      <InputGroup w={"3xs"}>
-        <InputRightElement pointerEvents="none" mx={"8"} my={"2px"}>
+      <Flex alignItems={"center"} gap={"16"}>
+        <InputGroup w={"3xs"}>
+          <Input
+            isInvalid={
+              firstChange
+                ? userFetched && updatedHandle && updatedHandle?.length > 0
+                  ? false
+                  : true
+                : false
+            }
+            placeholder={updatedHandle ? updatedHandle : "handle..."}
+            _placeholder={{
+              color: "font.muted3"
+            }}
+            px={"16"}
+            size={"lg"}
+            borderColor={"primary.400"}
+            step={5}
+            maxW="3xs"
+            value={updatedHandle ?? ""}
+            onChange={(value) => {
+              setFirstChange(true);
+              setIsInputChaging(true);
+              dispatch(setUpdatedHandle(value.target.value));
+            }}
+          />
+        </InputGroup>
+        <Box pointerEvents="none">
           {updatedHandle &&
             updatedHandle?.length > 0 &&
-            (userPending ? (
-              <Spinner
-                thickness="3px"
-                speed="0.65s"
-                emptyColor="gray.200"
-                color="primary.500"
-                size="lg"
-              />
+            (userPending || isInputChaging ? (
+              <Box animation={spinAnimation} cursor={"pointer"}>
+                <IoSyncOutline color="#1c7ed6" size={"2.4rem"} />
+              </Box>
             ) : (
-              <Box transition={"all .3s"} opacity={isCheckmark ? 1 : 0}>
-                <IoMdCheckmarkCircleOutline color="#37b24d" size={"2.4rem"} />
+              <Box transition={"all .3s"}>
+                {isCheckmark ? (
+                  <IoMdCheckmarkCircleOutline color="#37b24d" size={"2.4rem"} />
+                ) : (
+                  <IoCloseCircleOutline color="#f03e3e" size={"2.4rem"} />
+                )}
               </Box>
             ))}
-        </InputRightElement>
-        <Input
-          isInvalid={
-            firstChange
-              ? userFetched && updatedHandle && updatedHandle?.length > 0
-                ? false
-                : true
-              : false
-          }
-          placeholder={updatedHandle ? updatedHandle : "handle..."}
-          _placeholder={{
-            color: "font.muted3"
-          }}
-          px={"16"}
-          size={"lg"}
-          borderColor={"primary.400"}
-          step={5}
-          maxW="3xs"
-          value={updatedHandle ?? ""}
-          onChange={(value) => {
-            setFirstChange(true);
-            dispatch(setUpdatedHandle(value.target.value));
-          }}
-        />
-      </InputGroup>
+        </Box>
+      </Flex>
     </>
   );
 };

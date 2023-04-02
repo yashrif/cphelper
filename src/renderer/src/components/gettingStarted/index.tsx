@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { IoChevronForwardOutline } from "react-icons/io5";
 
 import { Handle } from "../reusable/Handle";
-import { ProblemRating } from "./ProblemRating";
-import { ProblemTags } from "./ProblemTags";
+import { ProblemRating } from "../reusable/ProblemRating";
+import { ProblemTags } from "../reusable/ProblemTags";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { Loading } from "../../common/types";
 import { setAndStoreHandle } from "../../store/slices/settingsSlice";
