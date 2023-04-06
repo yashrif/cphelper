@@ -10,12 +10,16 @@ export interface settings {
       store: Loading;
     };
   };
+  isHandleValid: boolean;
+  isHandleChanged: boolean;
 }
 
 const initialState = {
   loading: {
     handle: { load: Loading.IDLE, store: Loading.IDLE }
-  }
+  },
+  isHandleValid: false,
+  isHandleChanged: false
 } as settings;
 
 /* -------------------------------------------------------------------------- */
@@ -67,6 +71,12 @@ const settingsSlice = createSlice({
   reducers: {
     setHandle: (state, action: PayloadAction<string | null>) => {
       state.handle = action.payload;
+    },
+    setIsHandelValid: (state, action: PayloadAction<boolean>) => {
+      state.isHandleValid = action.payload;
+    },
+    setIsHandleChanged: (state, action: PayloadAction<boolean>) => {
+      state.isHandleChanged = action.payload;
     }
   },
   extraReducers(builder) {
@@ -114,4 +124,4 @@ const settingsSlice = createSlice({
 });
 
 export default settingsSlice.reducer;
-export const { setHandle } = settingsSlice.actions;
+export const { setHandle, setIsHandelValid, setIsHandleChanged } = settingsSlice.actions;

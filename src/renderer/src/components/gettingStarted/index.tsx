@@ -8,16 +8,16 @@ import { Handle } from "../reusable/Handle";
 import { ProblemRating } from "../reusable/ProblemRating";
 import { ProblemTags } from "../reusable/ProblemTags";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { Loading } from "../../common/types";
-import { setAndStoreHandle } from "../../store/slices/settingsSlice";
+import { setAndStoreHandle, setIsHandleChanged } from "../../store/slices/settingsSlice";
 
 export const GettingStarted = () => {
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
 
-  const handle = useAppSelector((state) => state.utils.updatedHandle);
-  const isUserFetched = useAppSelector((state) => state.cf.loading.user === Loading.SUCCEEDED);
+  const updatedHandle = useAppSelector((state) => state.utils.updatedHandle);
+  const isHandelValid = useAppSelector((state) => state.settings.isHandleValid);
+  const isHandleChanged = useAppSelector((state) => state.settings.isHandleChanged);
 
   useEffect(() => {
     /* ---------------------- TODO: Set Timer for each wave ---------------------- */
@@ -141,14 +141,21 @@ export const GettingStarted = () => {
               alignSelf={"center"}
               borderRadius={"full"}
               loadingText="Redirecting"
-              backgroundColor={"primary.500"}
+              backgroundColor={
+                isHandleChanged ? (isHandelValid ? "primary.500" : "#f03e3e") : "primary.500"
+              }
               variant="solid"
               _hover={{
-                boxShadow: "0 1.2rem 2rem rgba(28, 127, 214, 0.75)"
+                boxShadow: isHandleChanged
+                  ? isHandelValid
+                    ? "0 1.2rem 2rem rgba(28, 127, 214, 0.75)"
+                    : "0 1.2rem 2rem rgba(240, 62, 62, 0.75)"
+                  : "0 1.2rem 2rem rgba(28, 127, 214, 0.75)"
               }}
               onClick={() => {
-                if (handle && handle.length > 0 && isUserFetched) {
-                  dispatch(setAndStoreHandle(handle));
+                dispatch(setIsHandleChanged(true));
+                if (isHandelValid && updatedHandle) {
+                  dispatch(setAndStoreHandle(updatedHandle));
                   navigate("/");
                 }
               }}

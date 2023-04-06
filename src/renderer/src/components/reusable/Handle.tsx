@@ -7,10 +7,10 @@ import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { setUpdatedHandle } from "@renderer/store/slices/utilsSlice";
 import { fetchUser } from "../../store/actions/cf/cfActions";
 import { Loading } from "../../common/types";
+import { setIsHandelValid, setIsHandleChanged } from "@renderer/store/slices/settingsSlice";
 
 export const Handle = () => {
   const [isCheckmark, setIsCheckmark] = useState(true);
-  const [firstChange, setFirstChange] = useState(false);
   const [isInputChaging, setIsInputChaging] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -18,9 +18,11 @@ export const Handle = () => {
   const handle = useAppSelector((state) => state.settings.handle);
   const updatedHandle = useAppSelector((state) => state.utils.updatedHandle);
   const userPhoto = useAppSelector((state) => state.cf?.user?.titlePhoto);
-  const userFetched = useAppSelector((state) => state.cf.loading.user === Loading.SUCCEEDED);
-  const userPending = useAppSelector((state) => state.cf.loading.user === Loading.PENDING);
-  const userRejected = useAppSelector((state) => state.cf.loading.user === Loading.FAILED);
+  const isUserFetched = useAppSelector((state) => state.cf.loading.user === Loading.SUCCEEDED);
+  const isUserPending = useAppSelector((state) => state.cf.loading.user === Loading.PENDING);
+  const isUserRejected = useAppSelector((state) => state.cf.loading.user === Loading.FAILED);
+  const isHandleValid = useAppSelector((state) => state.settings.isHandleValid);
+  const isHandleChanged = useAppSelector((state) => state.settings.isHandleChanged);
 
   useEffect(() => {
     if (handle && !updatedHandle) dispatch(setUpdatedHandle(handle));
@@ -38,8 +40,8 @@ export const Handle = () => {
   }, [updatedHandle]);
 
   useEffect(() => {
-    if (userFetched) setIsCheckmark(true);
-    else if (userRejected) setIsCheckmark(false);
+    if (isUserFetched) setIsCheckmark(true);
+    else if (isUserRejected) setIsCheckmark(false);
 
     // let timer: NodeJS.Timeout;
     // if (userFetched)
@@ -48,7 +50,12 @@ export const Handle = () => {
     //   }, 1500);
 
     // return () => clearTimeout(timer);
-  }, [userFetched, userRejected, updatedHandle]);
+  }, [isUserFetched, isUserRejected]);
+
+  useEffect(() => {
+    if (updatedHandle) dispatch(setIsHandelValid(isUserFetched && updatedHandle?.length > 0));
+    else dispatch(setIsHandelValid(false));
+  }, [isUserFetched, updatedHandle]);
 
   const spin = keyframes`
     from { transform: rotate(0deg); }
@@ -61,7 +68,7 @@ export const Handle = () => {
     <>
       <GridItem colSpan={2} justifySelf={"center"}>
         <Box boxSize={"36"}>
-          {userPending || userRejected || updatedHandle?.length == 0 ? (
+          {isUserPending || isUserRejected || updatedHandle?.length == 0 ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="100%"
@@ -69,7 +76,7 @@ export const Handle = () => {
               viewBox="0 0 532 532"
               xmlnsXlink="http://www.w3.org/1999/xlink"
               style={{
-                backgroundColor: `${userPending ? "transparent" : "#f03e3e"}`,
+                backgroundColor: `${isUserPending ? "transparent" : "#f03e3e"}`,
                 borderRadius: "100%"
               }}
             >
@@ -98,10 +105,10 @@ export const Handle = () => {
           ) : (
             <Image
               boxSize={"full"}
-              src={userPending ? "" : userPhoto}
+              src={isUserPending ? "" : userPhoto}
               border={"2px solid #62b1ff"}
               borderRadius={"full"}
-              opacity={userFetched && updatedHandle && updatedHandle?.length > 0 ? 1 : 0}
+              opacity={isHandleValid ? 1 : 0}
             />
           )}
         </Box>
@@ -114,13 +121,7 @@ export const Handle = () => {
       <Flex alignItems={"center"} gap={"16"}>
         <InputGroup w={"3xs"}>
           <Input
-            isInvalid={
-              firstChange
-                ? userFetched && updatedHandle && updatedHandle?.length > 0
-                  ? false
-                  : true
-                : false
-            }
+            isInvalid={isHandleChanged ? !isHandleValid : false}
             placeholder={updatedHandle ? updatedHandle : "handle..."}
             _placeholder={{
               color: "font.muted3"
@@ -132,7 +133,7 @@ export const Handle = () => {
             maxW="3xs"
             value={updatedHandle ?? ""}
             onChange={(value) => {
-              setFirstChange(true);
+              dispatch(setIsHandleChanged(true));
               setIsInputChaging(true);
               dispatch(setUpdatedHandle(value.target.value));
             }}
@@ -141,7 +142,7 @@ export const Handle = () => {
         <Box pointerEvents="none">
           {updatedHandle &&
             updatedHandle?.length > 0 &&
-            (userPending || isInputChaging ? (
+            (isUserPending || isInputChaging ? (
               <Box animation={spinAnimation} cursor={"pointer"}>
                 <IoSyncOutline color="#1c7ed6" size={"2.4rem"} />
               </Box>

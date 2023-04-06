@@ -31,3 +31,4 @@ futureWorks.md
 *.sw?
 prisma/migrations
 dev.db-journal
+prisma/dev.db

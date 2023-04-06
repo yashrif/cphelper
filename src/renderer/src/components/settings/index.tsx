@@ -1,9 +1,8 @@
 import { Box, Button, Flex, Grid, Text } from "@chakra-ui/react";
 
 import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
-import { setAndStoreHandle } from "../../store/slices/settingsSlice";
+import { setAndStoreHandle, setIsHandleChanged } from "../../store/slices/settingsSlice";
 import { Handle } from "../reusable/Handle";
-import { Loading } from "@renderer/common/types";
 import { setUpdatedHandle } from "@renderer/store/slices/utilsSlice";
 
 export const Settings = () => {
@@ -11,7 +10,8 @@ export const Settings = () => {
 
   const handle = useAppSelector((state) => state.settings.handle);
   const updatedHandle = useAppSelector((state) => state.utils.updatedHandle);
-  const isUserFetched = useAppSelector((state) => state.cf.loading.user === Loading.SUCCEEDED);
+  const isHandleValid = useAppSelector((state) => state.settings.isHandleValid);
+  const isHandleChanged = useAppSelector((state) => state.settings.isHandleChanged);
 
   return (
     <Grid h={"full"} w={"full"} overflow={"hidden"} gridTemplateColumns={"1fr auto"}>
@@ -40,8 +40,9 @@ export const Settings = () => {
           </Text>
         </Box>
 
-        <Flex justifyContent={"end"} px={"36"} columnGap={"16"}>
+        <Flex justifyContent={"end"} px={"36"} columnGap={"16"} opacity={isHandleChanged ? 1 : 0}>
           <Button
+            isDisabled={!isHandleValid || updatedHandle === handle}
             px={"24"}
             py={"18"}
             alignSelf={"center"}
@@ -52,9 +53,7 @@ export const Settings = () => {
               boxShadow: "0 1.2rem 2rem rgba(28, 127, 214, 0.75)"
             }}
             onClick={() => {
-              if (updatedHandle && updatedHandle.length > 0 && isUserFetched) {
-                dispatch(setAndStoreHandle(updatedHandle));
-              }
+              if (updatedHandle) dispatch(setAndStoreHandle(updatedHandle));
             }}
           >
             <Text fontSize={"lg"} color={"font.light"}>
@@ -74,6 +73,7 @@ export const Settings = () => {
             }}
             onClick={() => {
               dispatch(setUpdatedHandle(handle));
+              dispatch(setIsHandleChanged(false));
             }}
           >
             <Text fontSize={"lg"} color={"primary.500"}>
